@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monster Breeder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="stat">🎶 Musique : <span id="music-toggle" onclick="toggleMusic()">ON</span></div>
+    <div class="stat">🔊 Volume : <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume()"></div>
+  </header>
+  <audio id="game-music" loop>
+    <source src="audio/mixkit-to-the-next-round-1047.mp3" type="audio/mpeg">
+    Votre navigateur ne supporte pas l'élément audio.
+  </audio>
+
+  <!-- Écran d'accueil -->
+  <section id="home-screen" class="screen">
+    <h1 class="title">Monster Breeder</h1>
+    <p class="subtitle">Élevez, améliorez et envoyez votre compagnon dans la Tour !</p>
+    
+    <div class="home-actions">
+      <button class="btn primary" onclick="startNewGame()">Commencer une nouvelle aventure</button>
+      <button class="btn" id="continue-button" style="display:none;" onclick="showSaveLoadModal()">Continuer la partie</button>
+    </div>
+  </section>
+
+  <!-- Écran principal -->
+  <section id="main-screen" class="screen hidden">
+    <header class="topbar">
+      <div class="stat">💰 Or : <span id="gold">0</span></div>
+      <div class="stat">⚡ Énergie : <span id="energy">10</span>/<span id="energy-max">10</span></div>
+      <div class="stat">🗼 Étage : <span id="floor">1</span></div>
+    </header>
+
+    <div id="active-monster"></div>
+
+    <div class="actions">
+      <button class="btn primary" onclick="startTowerRun()">Lancer le combat</button>
+      <button class="btn" onclick="showScreen('shop')">Boutique</button>
+      <button class="btn" onclick="showScreen('collection')">Mes Monstres</button>
+      <button class="btn" onclick="showScreen('inventory')">Inventaire</button> </div>
+    </div>
+  </section>
+
+  <!--Ecran inventaire-->
+  <section id="inventory-screen" class="screen hidden">
+    <h2 style="color: #2C3E50; font-size: 2.5rem; margin-bottom: 30px; font-weight: 600;">Mon Inventaire</h2>
+    <div class="item-grid" id="inventory-grid">
+      </div>
+    <button class="btn" onclick="showScreen('main')">Retour</button>
+  </section>
+
+  <!-- Écran boutique -->
+  <section id="shop-screen" class="screen hidden">
+    <h2 style="color: #2C3E50; font-size: 2.5rem; margin-bottom: 30px; font-weight: 600;">Boutique</h2>
+    <div class="shop-grid">
+      <div class="shop-card">
+        <h3>🔥 Améliorations</h3>
+        <div id="upgrades-container"></div>
+      </div>
+      <div class="shop-card">
+        <h3>🥚 Œufs</h3>
+        <img src="image/oeuf-mystere.png" alt="Œuf mystère" style="width:100px; height:auto; margin-bottom: 10px;">
+        <p>Achetez un œuf mystère pour tenter d'obtenir un monstre de n'importe quelle rareté.</p>
+        <button class="btn" onclick="buyEgg()">Œuf Mystère (<span id="egg-cost-text">200 or</span>)</button>
+      </div>
+      <div class="shop-card">
+        <h3>✨ Objets Équipables</h3>
+        <div id="item-list"></div>
+      </div>
+      <div class="shop-card">
+        <h3>⚡ Énergie</h3>
+        <button class="btn" onclick="buyEnergy()">+1 Énergie (50 or)</button>
+        <p class="hint">Se régénère aussi automatiquement avec le temps.</p>
+      </div>
+    </div>
+    <button class="btn" onclick="showScreen('main')">Retour</button>
+  </section>
+
+  <!-- Écran de combat -->
+  <section id="battle-screen" class="screen hidden">
+    <h2 style="color: #2C3E50; font-size: 2.5rem; margin-bottom: 30px; font-weight: 600;">Combat</h2>
+    <div class="battle-top">
+      <div class="battle-speed">
+        <button id="speedBtn" class="btn" onclick="toggleBattleSpeed()">⚡ Vitesse x1</button>
+      </div>
+      <div class="battle-floor">Étage <span id="battle-floor">1</span></div>
+    </div>
+    <div id="battle-monsters" class="battle-arena"></div>
+    <div id="battle-log" class="log"></div>
+    <div class="battle-actions">
+      <button id="backToMain" class="btn" onclick="showScreen('main')" disabled>Retour au menu</button>
+    </div>
+  </section>
+
+  <!-- Écran collection -->
+  <section id="collection-screen" class="screen hidden">
+    <h2 style="color: #2C3E50; font-size: 2.5rem; margin-bottom: 30px; font-weight: 600;">Mes Monstres</h2>
+    <div class="sort-bar">
+      <span>Trier par :</span>
+      <button class="btn btn-sort" onclick="sortMonsters('level')">Niveau</button>
+      <button class="btn btn-sort" onclick="sortMonsters('rarity')">Rareté</button>
+      <button class="btn btn-sort" onclick="sortMonsters('type')">Type</button>
+      <button class="btn btn-sort" onclick="sortMonsters('name')">Nom</button>
+    </div>
+    <div id="monster-list" class="grid"></div>
+    <button class="btn" onclick="showScreen('main')">Retour</button>
+  </section>
+
+  <!-- Modale -->
+  <div id="modal" class="hidden">
+    <div id="modal-box">
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <footer><button class="btn" onclick="showSaveLoadModal()">💾 Sauvegarder/Charger</button></footer>
+
+  <script src="game.js"></script>
+</body>
+</html>

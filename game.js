@@ -3,7 +3,7 @@
 // =======================
 
 // ---- Constantes & réglages
-const ENERGY_MAX = 20;
+const ENERGY_MAX = 50;
 const ENERGY_REGEN_MS = 60000; // +1 énergie par minute
 const GOLD_PER_FLOOR_BASE = 15;
 
@@ -117,15 +117,15 @@ const BOSS_FLOORS = [25, 50, 75, 100, 125, 150];
 // ITEMS DANS LA BOUTIQUE
 const ITEMS = [
   { id: '1', name: 'Épée de Bois', type: 'attack', rarity: 'common', price: 100, bonus: 2, image: 'image/items/epéedebois.png', description: '+2 ATQ' },
-  { id: '7', name: 'Épée de Fer', type: 'attack', rarity: 'rare', price: 200, bonus: 4, image: 'image/items/epéedefer.png', description: '+4 ATQ' },
-  { id: '8', name: 'Épée de Diamant', type: 'attack', rarity: 'epic', price: 500, bonus: 8, image: 'image/items/epéedediamant.png', description: '+8 ATQ' },
-  { id: '2', name: 'Bouclier en Bois', type: 'defense', rarity: 'common', price: 300, bonus: 2, image: 'image/items/bouclierdebois.png', description: '+2 DEF' },
-  { id: '9', name: 'Armure en fer', type: 'defense', rarity: 'rare', price: 300, bonus: 4, image: 'image/items/armureenfer.png', description: '+4 DEF' },
-  { id: '10', name: 'Talisman défensif', type: 'defense', rarity: 'epic', price: 500, bonus: 8, image: 'image/items/talismandef.png', description: '+8 DEF' },
+  { id: '7', name: 'Épée de Fer', type: 'attack', rarity: 'rare', price: 500, bonus: 4, image: 'image/items/epéedefer.png', description: '+4 ATQ' },
+  { id: '8', name: 'Épée de Diamant', type: 'attack', rarity: 'epic', price: 1500, bonus: 8, image: 'image/items/epéedediamant.png', description: '+8 ATQ' },
+  { id: '2', name: 'Bouclier en Bois', type: 'defense', rarity: 'common', price: 100, bonus: 2, image: 'image/items/bouclierdebois.png', description: '+2 DEF' },
+  { id: '9', name: 'Armure en fer', type: 'defense', rarity: 'rare', price: 500, bonus: 4, image: 'image/items/armureenfer.png', description: '+4 DEF' },
+  { id: '10', name: 'Talisman défensif', type: 'defense', rarity: 'epic', price: 1500, bonus: 8, image: 'image/items/talismandef.png', description: '+8 DEF' },
   { id: '3', name: 'Poudre de vitesse commun', type: 'speed', rarity: 'rare', price: 300, bonus: 1, image: 'image/items/poudrevitesse1.png', description: '+1 VIT' },
   { id: '4', name: 'Potion de Vie', type: 'hp', rarity: 'common', price: 100, bonus: 5, image: 'image/items/potionvie1.png', description: '+5 PV' },
-  { id: '5', name: 'Potion de Vie', type: 'hp', rarity: 'rare', price: 200, bonus: 10, image: 'image/items/potionvie2.png', description: '+10 PV' },
-  { id: '6', name: 'Potion de Vie', type: 'hp', rarity: 'epic', price: 500, bonus: 20, image: 'image/items/potionvie3.png', description: '+20 PV' },
+  { id: '5', name: 'Potion de Vie', type: 'hp', rarity: 'rare', price: 500, bonus: 10, image: 'image/items/potionvie2.png', description: '+10 PV' },
+  { id: '6', name: 'Potion de Vie', type: 'hp', rarity: 'epic', price: 1500, bonus: 20, image: 'image/items/potionvie3.png', description: '+20 PV' },
 ];
 
 // ITEMS DE VICTOIRE DE BOSS
@@ -306,33 +306,37 @@ function renderMain(){
 }
 
 function renderCollection() {
-  const list = document.getElementById('monster-list');
-  list.innerHTML = '';
-  state.playerMonsters.forEach(m => {
-    const hpPct = clamp((m.hp / m.maxHp) * 100, 0, 100);
-    const xpPct = clamp((m.xp / m.xpNeeded) * 100, 0, 100);
-    const div = document.createElement('div');
-    div.className = 'card';
+  const list = document.getElementById('monster-list');
+  list.innerHTML = '';
+  state.playerMonsters.forEach(m => {
+    const hpPct = clamp((m.hp / m.maxHp) * 100, 0, 100);
+    const xpPct = clamp((m.xp / m.xpNeeded) * 100, 0, 100);
+    const div = document.createElement('div');
+    div.className = 'card';
 
-    // Déterminez les propriétés du bouton de vente
-    const isActive = m.id === state.activeMonsterId;
-    const sellBtnText = isActive ? 'Actif' : `Vendre (${getMonsterSellPrice(m)} or)`;
-    const sellBtnDisabled = isActive ? 'disabled' : '';
-    
-    div.innerHTML = `
-      <img class="monster-img" src="${m.image}" alt="${m.name}">
-      <h3>${m.name} <span class="badge ${m.rarity}">${m.rarity.toUpperCase()}</span></h3>
-      <div class="statline">Type : ${m.type} — Niveau ${m.level}</div>
-      <div class="bar hpbar"><div class="hpfill" style="width:${hpPct}%"></div></div>
-      <div class="bar xpbar"><div class="xpfill" style="width:${xpPct}%"></div></div>
-      <div class="statline">ATQ ${m.attack} • DEF ${m.defense} • VIT ${m.speed} • PV ${m.hp}/${m.maxHp}</div>
-      <div class="row">
-        <button class="btn" onclick="setActiveMonster('${m.id}')">Activer</button>
-        <button class="btn btn-mini" ${sellBtnDisabled} onclick="sellMonster('${m.id}')">${sellBtnText}</button>
-      </div>
-    `;
-    list.appendChild(div);
-  });
+    const isActive = m.id === state.activeMonsterId;
+    const sellBtnText = isActive ? 'Actif' : `Vendre (${getMonsterSellPrice(m)} or)`;
+    const sellBtnDisabled = isActive ? 'disabled' : '';
+
+    let maxFloorHTML = '';
+    if (m.maxFloor !== undefined) {
+      maxFloorHTML = `<div class="statline">Étage max : ${m.maxFloor}</div>`;
+    }
+
+    div.innerHTML = `
+      <img class="monster-img" src="${m.image}" alt="${m.name}">
+      <h3>${m.name} <span class="badge ${m.rarity}">${m.rarity.toUpperCase()}</span></h3>
+      <div class="statline">Type : ${m.type} — Niveau ${m.level}</div>
+      <div class="bar hpbar"><div class="hpfill" style="width:${hpPct}%"></div></div>
+      <div class="bar xpbar"><div class="xpfill" style="width:${xpPct}%"></div></div>
+      <div class="statline">ATQ ${m.attack} • DEF ${m.defense} • VIT ${m.speed} • PV ${m.hp}/${m.maxHp}</div>
+      ${maxFloorHTML} <div class="row">
+        <button class="btn" onclick="setActiveMonster('${m.id}')">Activer</button>
+        <button class="btn btn-mini" ${sellBtnDisabled} onclick="sellMonster('${m.id}')">${sellBtnText}</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
 }
 
 
@@ -441,7 +445,7 @@ function confirmUpgradePurchase(stat, quantity) {
 
 // DEFINITION DU PRIX DE BASE DE OEUF
 function getEggCost() {
-  return 20 + state.playerMonsters.length * 50;
+  return 50 + state.playerMonsters.length * 50;
 }
 
 function buyEgg() {
@@ -781,57 +785,65 @@ function scaleEnemyFromSpecies(species, floor){
 
 // ---- Combat (tours + ATB bonus)
 function startTowerRun(){
-  if(state.energy <= 0) return showModal('Énergie insuffisante','Vous n\'avez plus d\'énergie.');
-  const m = getActiveMonster(); if(!m) return showModal('Aucun monstre','Activez un monstre.');
+  if(state.energy <= 0) return showModal('Énergie insuffisante','Vous n\'avez plus d\'énergie.');
+  const m = getActiveMonster(); if(!m) return showModal('Aucun monstre','Activez un monstre.');
+  
+  // NOUVELLE LIGNE : On initialise l'étage max si la propriété n'existe pas encore
+  if (m.maxFloor === undefined) {
+    m.maxFloor = 0;
+  }
+  
   state.energy -= 1;
-  const bonusHp = m.equippedItems.hp ? m.equippedItems.hp.bonus : 0;
-  m.hp = m.maxHp + bonusHp; // <-- NOUVELLE LIGNE : On ajoute le bonus HP pour le full heal
-  state.currentFloor = 1;
-  runNextFloor(m);
+  const bonusHp = m.equippedItems.hp ? m.equippedItems.hp.bonus : 0;
+  m.hp = m.maxHp + bonusHp; 
+  state.currentFloor = 1;
+  runNextFloor(m);
 }
 
 function runNextFloor(monster){
-  const species = pickEnemySpecies(state.currentFloor);
-  const foe = scaleEnemyFromSpecies(species, state.currentFloor);
-  startBattle(monster, foe, (result, playerBattle, enemyBattle)=>{
-   // Mettre à jour les HP du monstre du joueur avec les HP restants de la bataille
-    monster.hp = playerBattle.hp;
+  const species = pickEnemySpecies(state.currentFloor);
+  const foe = scaleEnemyFromSpecies(species, state.currentFloor);
+  startBattle(monster, foe, (result, playerBattle, enemyBattle)=>{
+    monster.hp = playerBattle.hp;
 
-    if(result === 'win'){
-      const rarityMult = foe.rarity==='epic' ? 2.0 : foe.rarity==='rare' ? 1.5 : 1.0;
-      const xpGain = (8 * state.currentFloor + foe.level * 3) * rarityMult;
-      const goldGain = Math.floor(GOLD_PER_FLOOR_BASE * state.currentFloor * 0.8 + 10);
-      
-      gainXp(monster, xpGain);
+    if(result === 'win'){
+      const rarityMult = foe.rarity==='epic' ? 2.0 : foe.rarity==='rare' ? 1.5 : 1.0;
+      const xpGain = (8 * state.currentFloor + foe.level * 3) * rarityMult;
+      const goldGain = Math.floor(GOLD_PER_FLOOR_BASE * state.currentFloor * 0.8 + 10);
+      
+      gainXp(monster, xpGain);
 
-      state.gold += goldGain;
-      
-     // Vérifier si c'est un boss (tous les 10 étages)
-      if(BOSS_FLOORS.includes(state.currentFloor)) {
-          const dropChance = 20; // 20% de chance d'obtenir l'objet
-          if(Math.random() * 100 < dropChance) {
-           // Choisir un objet aléatoire dans le nouveau tableau de butin de boss
-              const randomItem = BOSS_LOOT_TABLE[Math.floor(Math.random() * BOSS_LOOT_TABLE.length)];
-              state.playerItems.push(randomItem);
-              showModal('Victoire !', `Vous avez vaincu le boss et avez obtenu un objet : ${randomItem.name} !`);
-          } else {
-              showModal('Victoire !', `Vous avez vaincu le boss, mais n'avez pas obtenu l'objet rare. Retentez votre chance !`);
-           }
-      }
+      state.gold += goldGain;
 
-      state.currentFloor += 1;
-      renderMain();
-      runNextFloor(monster); 
+      // --- NOUVELLE LOGIQUE : Mettre à jour l'étage max
+      if (state.currentFloor > monster.maxFloor) {
+          monster.maxFloor = state.currentFloor;
+      }
+      
+      if(BOSS_FLOORS.includes(state.currentFloor)) {
+          const dropChance = 20; 
+          if(Math.random() * 100 < dropChance) {
+              const randomItem = BOSS_LOOT_TABLE[Math.floor(Math.random() * BOSS_LOOT_TABLE.length)];
+              state.playerItems.push(randomItem);
+              showModal('Victoire !', `Vous avez vaincu le boss et avez obtenu un objet : ${randomItem.name} !`);
+          } else {
+              showModal('Victoire !', `Vous avez vaincu le boss, mais n'avez pas obtenu l'objet rare. Retentez votre chance !`);
+           }
+      }
 
-    } else {
-      const bonusHp = monster.equippedItems.hp ? monster.equippedItems.hp.bonus : 0;
-      monster.hp = monster.maxHp + bonusHp;
-      state.currentFloor = 1;
-      document.getElementById('backToMain').disabled = false;
-      showModal('Fin de la run', `${monster.name} a été vaincu. Retour au menu.`);
-      showScreen('main');
-    }
-  });
+      state.currentFloor += 1;
+      renderMain();
+      runNextFloor(monster); 
+
+    } else {
+      const bonusHp = monster.equippedItems.hp ? monster.equippedItems.hp.bonus : 0;
+      monster.hp = monster.maxHp + bonusHp;
+      state.currentFloor = 1;
+      document.getElementById('backToMain').disabled = false;
+      showModal('Fin de la run', `${monster.name} a été vaincu. Retour au menu.`);
+      showScreen('main');
+    }
+  });
 }
 
 // ---- Combat core

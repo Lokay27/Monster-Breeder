@@ -49,7 +49,7 @@ const SPECIES = {
     { name: 'Embraseur', type: 'feu', rarity:'common', attack: 15, defense: 5, hp: 20, image: "image/Feu/embraseur.png" },
     { name: 'Braizon', type: 'feu', rarity:'common', attack: 13, defense: 7, hp: 20, image: "image/Feu/braizon.png" },
     { name: 'Pyron', type: 'feu', rarity:'common', attack: 16, defense: 4, hp: 20, image: "image/Feu/pyron.png" },
-    { name: 'Flambino', type: 'feu', rarity:'common', attack: 14, defense: 6, hp: 20, image: "image/Feu/flambino.png" },
+    { name: 'Flambino', type: 'feu', rarity:'common', attack: 14, defense: 6, hp: 20, image: "image/Feu/Flambino.png" },
     { name: 'Cendrillon', type: 'feu', rarity:'common', attack: 12, defense: 8, hp: 20, image: "image/Feu/cendrillon.png" },
     { name: 'Incendium', type: 'feu', rarity:'common', attack: 17, defense: 3, hp: 20, image: "image/Feu/incendium.png"},
     
@@ -1218,7 +1218,7 @@ function resetAndReload(slot) {
 function startNewGame() {
   // Réinitialise l'état du jeu pour une nouvelle partie
   state = {
-    gold: 11110,
+    gold: 50,
     energy: ENERGY_MAX,
     currentFloor: 1,
     playerMonsters: [],

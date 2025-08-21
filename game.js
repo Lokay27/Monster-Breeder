@@ -5,7 +5,12 @@
 // ---- Constantes & réglages
 const ENERGY_MAX = 50;
 const ENERGY_REGEN_MS = 60000; // +1 énergie par minute
-const GOLD_PER_FLOOR_BASE = 15;
+const GOLD_PER_RARITY = {
+    'common': 10,
+    'uncommon': 25,
+    'rare': 50,
+    'epic': 100
+};
 
 const SPEED_STEPS = [1, 2, 4]; // x1/x2/x4
 const ATB_TICK_MS = 200; // tick base
@@ -156,7 +161,9 @@ let state = {
 function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 function choice(arr){ return arr[rand(0,arr.length-1)]; }
 function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
-function xpNeeded(level){ return 100 * level; } // barre plus longue à chaque niveau
+function xpNeeded(level) {
+    return Math.floor(100 * (level ** 1.5));
+}
 
 // ---- UI helpers
 function showScreen(id){
@@ -806,16 +813,16 @@ function runNextFloor(monster){
   startBattle(monster, foe, (result, playerBattle, enemyBattle)=>{
     monster.hp = playerBattle.hp;
 
-    if(result === 'win'){
-      const rarityMult = foe.rarity==='epic' ? 2.0 : foe.rarity==='rare' ? 1.5 : 1.0;
-      const xpGain = (8 * state.currentFloor + foe.level * 3) * rarityMult;
-      const goldGain = Math.floor(GOLD_PER_FLOOR_BASE * state.currentFloor * 0.8 + 10);
-      
-      gainXp(monster, xpGain);
+    if(result === 'win'){
+      const rarityMult = foe.rarity==='epic' ? 2.0 : foe.rarity==='rare' ? 1.5 : 1.0;
+      const xpGain = (foe.level * 2) * rarityMult;
+      const goldGain = GOLD_PER_RARITY[foe.rarity];
 
-      state.gold += goldGain;
+      gainXp(monster, xpGain);
 
-      // --- NOUVELLE LOGIQUE : Mettre à jour l'étage max
+      state.gold += goldGain;
+
+     // --- NOUVELLE LOGIQUE : Mettre à jour l'étage max
       if (state.currentFloor > monster.maxFloor) {
           monster.maxFloor = state.currentFloor;
       }

@@ -1,6 +1,8 @@
-// =======================
-// Monster Breeder - Core
-// =======================
+// =========================================================================================================================================
+// ------------------------------------------------------------Monster Breeder - Core-------------------------------------------------------
+// ==========================================================================================================================================
+
+// ------------------------------------------------ CONSTANTE ET DATABASE-------------------------------------------------------------------
 
 // ---- Constantes & réglages
 const ENERGY_MAX = 50;
@@ -19,19 +21,21 @@ const ITEM_SELL_VALUE = {
     'legendary': 500
 };
 
-const SPEED_STEPS = [1, 2, 4]; // x1/x2/x4
+const SPEED_STEPS = [1, 2, 4]; // vitesse de combat x1/x2/x4
 const ATB_TICK_MS = 200; // tick base
 const ATB_FILL_BASE = 3; // multiplicateur de remplissage par point de vitesse
 const ATB_FULL = 100;
 const MONSTER_SELL_RATE = 0.25; // Vente pour 25% de la valeur de base
 // const EGG_COST = 20; // Coût unique pour l'œuf mystère
 const EGG_PROBABILITIES = {
-  common: 0.70, // 70% de chance d'avoir un monstre commun
+  common: 0.70, // 70% de chance d'avoir un monstre commun pour l'oeuf mystère
   rare: 0.25,   // 25% de chance d'avoir un monstre rare
   epic: 0.05    // 5% de chance d'avoir un monstre épique
 };
 
-const TYPE_ADV = { // avantage simple
+// ---------------------------------------------- CONSTANTE POUR LETYPE DE PETIT MONSTRE----------------------------------------------------------
+
+const TYPE_ADV = { // Tablleau des avantages simple par type
   eau: 'feu',
   feu: 'plante',
   plante: 'eau'
@@ -45,13 +49,13 @@ function typeMultiplier(attType, defType){
   return 1.0;
 }
 
-// ---- Base d'espèces (fixes)
-// Commun (reprend tes données)
+// ---------------------------------------------------------- Base d'espèces (fixes)--------------------------------------------------------
+// ------------------------------------------------------------Commun ()--------------------------------------------------------------------
   const SPECIES = {
   common: [
     // Eau
     { id: 'gouttelette', name: 'Gouttelette', type: 'eau', rarity:'common', attack: 12, defense: 8, hp: 20, image: "image/Eau/gouttelette.png" },
-    { id: 'nageur', name: 'Nageur', type: 'eau', rarity:'common', attack: 14, defense: 6, hp: 20, image: "image/Eau/nageur.png"  },
+    { id: 'nageur', name: 'Nageur', type: 'eau', rarity:'common', attack: 14, defense: 6, hp: 20, image: "image/Eau/nageur.png",},
     { id: 'blobdemer', name: 'Blob de Mer', type: 'eau', rarity:'common', attack: 11, defense: 9, hp: 20, image: "image/Eau/blobdemer.png" },
     { id: 'vaguejunior', name: 'Vague Junior', type: 'eau', rarity:'common', attack: 13, defense: 7, hp: 20, image: "image/Eau/vaguejunior.png" },
     { id: 'bullot', name: 'Bullot', type: 'eau', rarity:'common', attack: 10, defense: 10, hp: 20, image: "image/Eau/bullot.png" },
@@ -75,12 +79,14 @@ function typeMultiplier(attType, defType){
     
     // Terre
     { id: 'caillou', name: 'Caillou', type: 'terre', rarity:'common', attack: 10, defense: 12, hp: 20, image: "image/Terre/caillou.png" },
-    { id: 'rochelle', name: 'Rochelle', type: 'terre', rarity:'common', attack: 9, defense: 13, hp: 20, image:  "image/Terre/rochelle.png" },
-    { id: 'mineralien', name: 'Minéralien', type: 'terre', rarity:'common', attack: 11, defense: 11, hp: 20, image:  "image/Terre/minéralien.png" },
-    { id: 'galette', name: 'Galette', type: 'terre', rarity:'common', attack: 12, defense: 10, hp: 20, image:  "image/Terre/galette.png" },
-    { id: 'pebble', name: 'Pebble', type: 'terre', rarity:'common', attack: 13, defense: 9, hp: 20, image:  "image/Terre/pebble.png" },
-    { id: 'geodon', name: 'Géodon', type: 'terre', rarity:'common', attack: 10, defense: 12, hp: 20, image:  "image/Terre/géodon.png" }
+    { id: 'rochelle', name: 'Rochelle', type: 'terre', rarity:'common', attack: 9, defense: 13, hp: 20, image: "image/Terre/rochelle.png" },
+    { id: 'mineralien', name: 'Minéralien', type: 'terre', rarity:'common', attack: 11, defense: 11, hp: 20, image: "image/Terre/minéralien.png" },
+    { id: 'galette', name: 'Galette', type: 'terre', rarity:'common', attack: 12, defense: 10, hp: 20, image: "image/Terre/galette.png" },
+    { id: 'pebble', name: 'Pebble', type: 'terre', rarity:'common', attack: 13, defense: 9, hp: 20, image: "image/Terre/pebble.png" },
+    { id: 'geodon', name: 'Géodon', type: 'terre', rarity:'common', attack: 10, defense: 12, hp: 20, image: "image/Terre/géodon.png" }
   ],
+
+  // ----------------------------------------------------------Rare-----------------------------------------------------------------------
   rare: [
     { id: 'ondin', name: 'Ondin', type: 'eau', rarity:'rare', attack: 16, defense: 12, hp: 22, image: "image/Eau/ondin.png" },
     { id: 'sirena', name: 'Siréna', type: 'eau', rarity:'rare', attack: 17, defense: 11, hp: 22, image: "image/Eau/sirena.png" },
@@ -98,7 +104,7 @@ function typeMultiplier(attType, defType){
     { id: 'bouldard', name: 'Bouldard', type: 'terre', rarity:'rare', attack: 17, defense: 13, hp: 22, image: "image/Terre/bouldard.png" },
     { id: 'terramite', name: 'Terramite', type: 'terre', rarity:'rare', attack: 14, defense: 15, hp: 22, image: "image/Terre/terramite.png" }
   ],
-  // Épique (2-3 par type)
+  // -------------------------------------------------------------Épique (2-3 par type)------------------------------------------------------
   epic: [
     { id: 'kraken', name: 'Kraken', type: 'eau', rarity:'epic', attack: 20, defense: 18, hp: 25, image: "image/Eau/kraken.png" },
     { id: 'leviathan', name: 'Léviathan', type: 'eau', rarity:'epic', attack: 18, defense: 20, hp: 25, image: "image/Eau/leviathan.png" },
@@ -113,7 +119,7 @@ function typeMultiplier(attType, defType){
     { id: 'colosse', name: 'Colosse', type: 'terre', rarity:'epic', attack: 20, defense: 20, hp: 25, image: "image/Terre/colosse.png" }
   ]
 };
-
+// -----------------------------------------------------------------Boss-----------------------------------------------------------------------
 const BOSS_SPECIES = [
   { name: 'Dracozor', type: 'feu', rarity: 'epic',  hp: 25, attack: 28, defense: 26, speed: 10 , image: 'image/boss/dracozor.png' },
   { name: 'Hydranox', type: 'eau', rarity: 'epic',  hp: 25, attack: 26, defense: 28, speed: 10 , image: 'image/boss/hydranox.png' },
@@ -121,7 +127,7 @@ const BOSS_SPECIES = [
   { name: 'Broceliox', type: 'plante', rarity: 'epic',  hp: 25, attack: 26, defense: 28, speed: 10 , image: 'image/boss/broceliox.png'},
   // Ajoutez d'autres boss ici
 ];
-
+// ----------------------------------------------Database Evolution et principe d'évolution--------------------------------------------------------------------
 const EVOLVED_SPECIES = {
     // La clé est l'ID de la nouvelle forme évoluée
     'hydrolette': { id: 'hydrolette', name: 'Hydrolette', type: 'eau', rarity: 'common', attack: 15, defense: 10, speed: 8, hp: 25, image: "image/Eau/hydrolette.png" },
@@ -141,7 +147,7 @@ const EVOLUTIONS = {
     'gouttelette': {evolvesTo: 'hydrolette', condition: {level: 20, victories: 3000}},
     'pyron': {evolvesTo: 'pyronis', condition: {level: 20, victories: 3000}},
     'champi': {evolvesTo: 'mycolos', condition: {level: 20, victories: 3000}},
-    'minéralien': {evolvesTo: 'terrelet', condition: {level: 25, victories: 4000}},
+    'mineralien': {evolvesTo: 'terrelet', condition: {level: 25, victories: 4000}},
     'dragondelave': {evolvesTo: 'volcalave', condition: {level: 70, victories: 33000}},
     'feuret': {evolvesTo: 'fulminoir', condition: {level: 35, victories: 13000}},
     'sirena': {evolvesTo: 'sirenalia', condition: {level: 35, victories: 13000}},
@@ -151,7 +157,7 @@ const EVOLUTIONS = {
     // Ajoutez d'autres évolutions ici (ex: 'braizon' évolue en 'salamandre')
 };
 
-// ITEMS DANS LA BOUTIQUE
+// -----------------------------------------------------------ITEMS DANS LA BOUTIQUE-------------------------------------------------------------
 const ITEMS = [
   { id: '1', name: 'Épée de Bois', type: 'attack', rarity: 'common', price: 100, bonus: 2, image: 'image/items/epéedebois.png', description: '+2 ATQ',  },
   { id: '7', name: 'Épée de Fer', type: 'attack', rarity: 'rare', price: 500, bonus: 4, image: 'image/items/epéedefer.png', description: '+4 ATQ',  },
@@ -165,14 +171,17 @@ const ITEMS = [
   { id: '6', name: 'Potion de Vie', type: 'hp', rarity: 'epic', price: 1500, bonus: 20, image: 'image/items/potionvie3.png', description: '+20 PV', },
 ];
 
-// ITEMS DE VICTOIRE DE BOSS
+// ---------------------------------------------------------ITEMS DE VICTOIRE DE BOSS-------------------------------------------------------------------
 const BOSS_LOOT_TABLE = [
     {id: 'ancient_amulet', name: 'Amulette Ancienne', type: 'speed', statModifiers: { speed: { min: 0.15, max: 0.30 } }, price: 5000, rarity: 'legendary', image: 'image/items/amuletteancienne.png', description: '',},
     {id: 'legendary_sword',name: 'Épée Légendaire',type: 'attack',statModifiers: { attack: { min: 0.10, max: 0.20 } },price: 5000,rarity: 'legendary',image: 'image/items/épéelégendaire.png', description: '', },
-    {id: 'bouclierlegendaire',name: 'Bouclier Légendaire',type: 'defense',statModifiers: { attack: { min: 0.10, max: 0.20 } },price: 5000,rarity: 'legendary',image: 'image/items/bouclierlegendaire.png', description: '', }
+    {id: 'bouclierlegendaire',name: 'Bouclier Légendaire',type: 'defense',statModifiers: { defense: { min: 0.10, max: 0.20 } },price: 5000,rarity: 'legendary',image: 'image/items/bouclierlegendaire.png', description: '', },
+    {id: 'coeureternite',name: 'Coeur éternel',type: 'hp',statModifiers: { hp: { min: 0.10, max: 0.20 } },price: 5000,rarity: 'legendary',image: 'image/items/coeureternite.png', description: '', },
 ];
 
-// Définition des objectifs quotidiens possibles
+
+
+//-------------------------------------------- Définition des objectifs quotidiens possibles--------------------------------------------------------
 const DAILY_OBJECTIVES = [
     {
         id: 'win_battles',
@@ -212,7 +221,7 @@ const DAILY_OBJECTIVES = [
     }
 ];
 
-// ---- Constantes pour la Boutique
+// ----------------------------- Constantes pour les amélioration de la Boutique------------------------------------------------------------
 const SHOP_UPGRADES = {
   attack: {
     name: "Amélioration d'Attaque",
@@ -244,7 +253,8 @@ let state = {
   lastObjectiveReset: null, // Horodatage de la dernière réinitialisation
 };
 
-// ---- Helpers
+// ------------------------------------------------------------------- Helpers----------------------------------------------------------------
+
 function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 function choice(arr){ return arr[rand(0,arr.length-1)]; }
 function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
@@ -252,7 +262,7 @@ function xpNeeded(level) {
     return Math.floor(100 * (level ** 1.5));
 }
 
-// ---- UI helpers
+// ------------------------------------------------------------------ UI helpers--------------------------------------------------------
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
 
@@ -279,6 +289,8 @@ function showScreen(id) {
         renderObjectives();
     }
 }
+
+// -------------------------------------------------Pop up de message--------------------------------------------------------------------------
 
 function showModal(title, text, confirmCallback = null) {
   const modal = document.getElementById("modal");
@@ -307,7 +319,7 @@ function closeModal() {
   window.confirmModal = null;
 }
 
-
+// ------------------------------------------------------######-----------------------------------------------------------------------------
 
 function getSpecies(monsterName) {
   for (const rarity in SPECIES) {
@@ -319,7 +331,8 @@ function getSpecies(monsterName) {
   return null;
 }
 
-// ---- Création d'un monstre depuis une espèce fixe avec variabilité
+// -------------------------------- Création d'un monstre depuis une espèce fixe avec variabilité----------------------------------------------
+
 function createMonsterFromSpecies(species) {
     const spdBase = species.rarity === 'epic' ? 8 : species.rarity === 'rare' ? 6 : 5;
 
@@ -376,7 +389,8 @@ function createMonsterFromSpecies(species) {
     };
 }
 
-// ---- Accès & rendu
+// ---- -----------------------------------------------Accès & rendu de chaque écran------------------------------------------------------------------
+
 function getActiveMonster(){ return state.playerMonsters.find(m=>m.id===state.activeMonsterId); }
 function renderMain(){
     document.getElementById('gold').textContent = state.gold;
@@ -392,6 +406,12 @@ function renderMain(){
     
     // Utilisation de la nouvelle fonction pour obtenir les stats finales
     const finalStats = getFinalStats(m);
+    
+    // CORRECTION : S'assurer que les HP actuels ne dépassent jamais les HP max
+    if (m.hp > finalStats.hp) {
+        m.hp = finalStats.hp;
+        saveState(); // Sauvegarder la correction
+    }
     
     const hpPct = clamp((m.hp/finalStats.hp)*100,0,100);
     const xpPct = clamp((m.xp/m.xpNeeded)*100,0,100);
@@ -460,13 +480,17 @@ function renderCollection() {
 
 
 
-// Nouvelle fonction utilitaire pour l'affichage du prix
+//------------------------------------ Nouvelle fonction utilitaire pour l'affichage du prix---------------------------------------------------
 function getMonsterSellPrice(monster) {
   const basePrice = getMonsterBasePrice(monster);
   return Math.floor(basePrice * MONSTER_SELL_RATE);
 }
+// ===========================================================================================================================================
+// ---- ---------------------------------------------------------------Boutique---------------------------------------------------------------
+// ===========================================================================================================================================
 
-// ---- Boutique
+//---------------------------------------------------- Fonction pour les améliorations--------------------------------------------------------
+
 function buyUpgrade(stat) {
     const m = getActiveMonster();
     if (!m) return showModal('Aucun monstre', 'Veuillez activer un monstre.');
@@ -491,7 +515,7 @@ function buyUpgrade(stat) {
     renderMain();
     renderShop();
 }
-// Fonction pour générer le HTML des améliorations
+
 function renderUpgradeShop() {
     const upgradesContainer = document.getElementById('upgrades-container');
     upgradesContainer.innerHTML = '';
@@ -523,7 +547,7 @@ function renderUpgradeShop() {
     }
 }
 
-// Fonction pour confirmer l'achat d'une amélioration
+//------------------------------------------------------ Fonction pour confirmer l'achat d'une amélioration------------------------------------
 function confirmUpgradePurchase(stat, quantity) {
     const costPerUpgrade = 100;
     let actualQuantity = quantity;
@@ -551,7 +575,7 @@ function confirmUpgradePurchase(stat, quantity) {
     );
 }
 
-// DEFINITION DU PRIX DE BASE DE OEUF
+// --------------------------------------------------------DEFINITION DU PRIX DE BASE DE OEUF--------------------------------------------------
 function getEggCost() {
   return 50 + state.playerMonsters.length * 50;
 }
@@ -605,6 +629,29 @@ function buyEgg() {
   );
 }
 
+// La fonction renderShop utilise maintenant getEggCost
+function renderShop(){
+    const eggCost = getEggCost();
+    document.getElementById('egg-cost-text').textContent = `${eggCost} or`;
+
+    // Affiche la section des améliorations
+    renderUpgradeShop();
+
+    // Affiche la nouvelle section d'objets
+    renderItemShop(); 
+}
+
+function hatchEgg(rarity){
+  const pool = SPECIES[rarity];
+  if(!pool || !pool.length) return showModal('Œuf vide', `Aucune espèce définie pour ${rarity}.`);
+  const species = choice(pool);
+  const mon = createMonsterFromSpecies(species);
+  state.playerMonsters.push(mon);
+  if(!state.activeMonsterId) state.activeMonsterId = mon.id;
+  showModal('Œuf éclos', `Vous obtenez <b>${mon.name}</b> (${mon.type}, ${mon.rarity}) avec des statistiques uniques !`);
+}
+
+// -----------------------------------------------ACHAT DES OBJETS et gestion des objets----------------------------------------------------------------------------
 function buyItem(itemId) {
   const itemToBuy = ITEMS.find(item => item.id === itemId);
   if (!itemToBuy) {
@@ -635,17 +682,6 @@ function buyItem(itemId) {
   );
 }
 
-// La fonction renderShop utilise maintenant getEggCost
-function renderShop(){
-    const eggCost = getEggCost();
-    document.getElementById('egg-cost-text').textContent = `${eggCost} or`;
-
-    // Affiche la section des améliorations
-    renderUpgradeShop();
-
-    // Affiche la nouvelle section d'objets
-    renderItemShop(); 
-}
 
 function renderItemShop() {
     const itemList = document.getElementById('item-list');
@@ -723,33 +759,29 @@ function sellItem(index) {
 }
 
 function equipItem(itemId) {
-    const itemIndex = state.playerItems.findIndex(item => item.id === itemId);
-    if (itemIndex === -1) {
-        showModal('Erreur', 'Cet objet n\'est pas dans votre inventaire.');
-        return;
-    }
-    const itemToEquip = state.playerItems[itemIndex];
-    const activeMonster = getActiveMonster();
-    if (!activeMonster) {
-        showModal('Erreur', 'Aucun monstre actif pour équiper cet objet.');
-        return;
-    }
-    const existingItem = activeMonster.equippedItems[itemToEquip.type];
-    if (existingItem) {
-        state.playerItems.push(existingItem);
-    }
-    activeMonster.equippedItems[itemToEquip.type] = itemToEquip;
-    state.playerItems.splice(itemIndex, 1);
-    
-    // Si l'objet donne un bonus HP, on l'ajoute directement au HP actuel
-    if (itemToEquip.bonus && itemToEquip.type === 'hp') {
-        activeMonster.hp += itemToEquip.bonus;
-    }
-    
-    saveState();
-    renderMain();
-    renderInventory();
-    showModal('Objet équipé !', `Vous avez équipé "${itemToEquip.name}" sur votre monstre.`);
+  const itemIndex = state.playerItems.findIndex(item => item.id === itemId);
+  if (itemIndex === -1) {
+    showModal('Erreur', 'Cet objet n\'est pas dans votre inventaire.');
+    return;
+  }
+  const itemToEquip = state.playerItems[itemIndex];
+  const activeMonster = getActiveMonster();
+  if (!activeMonster) {
+    showModal('Erreur', 'Aucun monstre actif pour équiper cet objet.');
+    return;
+  }
+  const existingItem = activeMonster.equippedItems[itemToEquip.type];
+  if (existingItem) {
+    state.playerItems.push(existingItem);
+  }
+  activeMonster.equippedItems[itemToEquip.type] = itemToEquip;
+  state.playerItems.splice(itemIndex, 1);
+  activeMonster.hp = getFinalStats(activeMonster).hp;
+  
+  saveState();
+  renderMain();
+  renderInventory();
+  showModal('Objet équipé !', `Vous avez équipé "${itemToEquip.name}" sur votre monstre.`);
 }
 
 function unequipAllItems() {
@@ -772,8 +804,6 @@ function unequipAllItems() {
     renderInventory();
     showModal('Déséquipement réussi !', 'Tous les objets ont été déséquipés et remis dans votre inventaire.');
 }
-
-
 
 
 function generateRandomBonus(min, max) {
@@ -829,6 +859,8 @@ function setActiveMonster(monsterId) {
     showScreen('main'); // <-- NOUVEAU : on retourne à l'écran principal
 }
 
+
+// --------------------------------------------------------- Achat d'énergies -------------------------------------------------------------------
 function buyEnergy(){
   const cost = 50;
   
@@ -852,17 +884,11 @@ function buyEnergy(){
   saveState();
 }
 
-function hatchEgg(rarity){
-  const pool = SPECIES[rarity];
-  if(!pool || !pool.length) return showModal('Œuf vide', `Aucune espèce définie pour ${rarity}.`);
-  const species = choice(pool);
-  const mon = createMonsterFromSpecies(species);
-  state.playerMonsters.push(mon);
-  if(!state.activeMonsterId) state.activeMonsterId = mon.id;
-  showModal('Œuf éclos', `Vous obtenez <b>${mon.name}</b> (${mon.type}, ${mon.rarity}) avec des statistiques uniques !`);
-}
+// ===========================================================================================================================================
+// -------------------------------------------------- Calcul de statistique------------------------------------------------------------------
+// ===========================================================================================================================================
 
-// Fonction pour calculer les stats finales (base + bonus)
+// ----------------------------------------Fonction pour calculer les stats finales (base + bonus)-------------------------------------------
 function getFinalStats(m) {
     if (!m) return {};
     return {
@@ -873,7 +899,7 @@ function getFinalStats(m) {
     };
 }
 
-// ---- XP & montée de niveau
+// ------------------------------------------------------ XP & montée de niveau-------------------------------------------------------------
 function gainXp(mon, xp) {
     state.dailyObjectives.forEach(obj => {
         if (obj.type === 'xp') {
@@ -894,10 +920,10 @@ function gainXp(mon, xp) {
         mon.statBonus.speed += 1; // La vitesse gagne déjà un minimum de 1
         mon.statBonus.hp += Math.max(1, Math.floor(baseStats.hp * 0.15));
         
-        // Met la vie actuelle à son maximum, en incluant les nouveaux bonus
+        // CORRECTION : Met à jour les HP et maxHP correctement après la montée de niveau
         const finalStats = getFinalStats(mon);
-        mon.hp = finalStats.hp;
-        mon.maxHp = finalStats.hp; // <--- AJOUTER CETTE LIGNE
+        mon.hp = finalStats.hp; // Remet les HP au maximum après montée de niveau
+        mon.maxHp = finalStats.hp; // Met à jour maxHP
         
         mon.xpNeeded = xpNeeded(mon.level);
         showModal('Niveau supérieur', `${mon.name} passe <b>niveau ${mon.level}</b> !`);
@@ -905,7 +931,11 @@ function gainXp(mon, xp) {
     renderMain();
 }
 
-// ---- Tour & génération d'ennemis
+// ===========================================================ZONE DE TOUR ET COMBAT===========================================================
+// ------------------------------------------------ Activation de la tour et des combats-----------------------------------------------------------------
+
+// -------------------------------------------------------- Tour & génération d'ennemis-------------------------------------------------------
+
 function pickEnemySpecies(floor){
   // Si l'étage est un multiple de 25, on choisit une espèce de boss.
   if(floor > 0 && floor % 50 === 0){
@@ -918,61 +948,58 @@ function pickEnemySpecies(floor){
   if(floor > 5  && roll < 0.35) return choice(SPECIES.rare);
   return choice(SPECIES.common);
 }
+
+
 function scaleEnemyFromSpecies(species, floor){
-  const foe = createMonsterFromSpecies(species);
-  
-  // NOUVEAU : On ajoute une propriété "isBoss" pour savoir si c'est un boss
-  foe.isBoss = BOSS_SPECIES.some(boss => boss.name === foe.name);
+  const foe = createMonsterFromSpecies(species);
+  
+  // NOUVEAU : On ajoute une propriété "isBoss" pour savoir si c'est un boss
+  foe.isBoss = BOSS_SPECIES.some(boss => boss.name === foe.name);
 
-  // Scaling : augmente niveau et stats avec l'étage
-  const bonusLvl = Math.floor(floor/2);
-  foe.level = Math.max(1, bonusLvl);
+  // Calcule le niveau en fonction de l'étage, comme avant
+  foe.level = Math.max(1, Math.floor(floor / 2));
+  
+  // **CORRECTION : Simule la montée de niveau pour que les ennemis gagnent des stats comme le joueur.**
+  for (let i = 1; i < foe.level; i++) {
+    foe.statBonus.attack += Math.max(1, Math.floor(foe.baseStats.attack * 0.1));
+    foe.statBonus.defense += Math.max(1, Math.floor(foe.baseStats.defense * 0.1));
+    foe.statBonus.speed += 1;
+    foe.statBonus.hp += Math.max(1, Math.floor(foe.baseStats.hp * 0.15));
+  }
+  
+  // NOUVEAU : Bonus de stats pour les boss
+  if(foe.isBoss){
+    foe.statBonus.hp = Math.floor(foe.statBonus.hp * 1.2);
+    foe.statBonus.attack = Math.floor(foe.statBonus.attack * 1.2);
+    foe.statBonus.defense = Math.floor(foe.statBonus.defense * 1.2);
+    foe.statBonus.speed = Math.floor(foe.statBonus.speed * 1.1);
+  }
   
-  const atkBonus = Math.floor(floor * 1.0);
-  const defBonus = Math.floor(floor * 0.8);
-  const hpBonus  = Math.floor(floor * 2);
-  const spdBonus = Math.floor(floor * 0.2);
-  
-  // Ajout d'une variabilité supplémentaire pour les ennemis (±10%)
-  const enemyVariance = 0.1;
-  const varyBonus = (bonus) => {
-    if (bonus <= 0) return bonus;
-    const min = Math.floor(bonus * (1 - enemyVariance));
-    const max = Math.floor(bonus * (1 + enemyVariance));
-    return rand(min, max);
-  };
-  
-  foe.attack += varyBonus(atkBonus);
-  foe.defense += varyBonus(defBonus);
-  foe.maxHp += varyBonus(hpBonus);
-  foe.hp = foe.maxHp;
-  foe.speed += varyBonus(spdBonus);
+  // Met à jour les stats finales avec la nouvelle fonction
+  const finalStats = getFinalStats(foe);
+  foe.hp = finalStats.hp;
+  foe.maxHp = finalStats.hp;
+  foe.attack = finalStats.attack;
+  foe.defense = finalStats.defense;
+  foe.speed = finalStats.speed;
 
-  // NOUVEAU : Bonus de stats pour les boss
-  if(foe.isBoss){
-    foe.maxHp = Math.floor(foe.maxHp * 1.2);
-    foe.hp = foe.maxHp;
-    foe.attack = Math.floor(foe.attack * 1.2);
-    foe.defense = Math.floor(foe.defense * 1.2);
-    foe.speed = Math.floor(foe.speed * 1.1);
-  }
-  
-  return foe;
+  return foe;
 }
 
-// ---- Combat (tours + ATB bonus)
+// ---- ---------------------------------------------------Combat (tours + ATB bonus)---------------------------------------------------------
 function startTowerRun(){
   if(state.energy <= 0) return showModal('Énergie insuffisante','Vous n\'avez plus d\'énergie.');
   const m = getActiveMonster(); if(!m) return showModal('Aucun monstre','Activez un monstre.');
-  
-  // NOUVELLE LIGNE : On initialise l'étage max si la propriété n'existe pas encore
-  if (m.maxFloor === undefined) {
-    m.maxFloor = 0;
-  }
-  
-  state.energy -= 1;
-  const bonusHp = m.equippedItems.hp ? m.equippedItems.hp.bonus : 0;
-  m.hp = m.maxHp + bonusHp; 
+  
+  // NOUVELLE LIGNE : On initialise l'étage max si la propriété n'existe pas encore
+  if (m.maxFloor === undefined) {
+    m.maxFloor = 0;
+  }
+  
+  state.energy -= 1;
+  // CORRECTION : Utilise getFinalStats pour initialiser la vie du monstre.
+  // Cela garantit que tous les bonus d'objets sont inclus une seule fois, au début de la run.
+  m.hp = getFinalStats(m).hp;
   state.currentFloor = 1;
   runNextFloor(m);
 }
@@ -1047,7 +1074,8 @@ function runNextFloor(monster){
   });
 }
 
-// ---- Combat core
+// ---------------------------------------------------------- Combat en lui même---------------------------------------------------------------
+
 function startBattle(player, enemy, onEnd){
   showScreen('battle');
   document.getElementById('battle-floor').textContent = state.currentFloor;
@@ -1185,7 +1213,8 @@ function startBattle(player, enemy, onEnd){
   }, ATB_TICK_MS / SPEED_STEPS[state.battle.speedIndex]);
 }
 
-// Fonction appelée à la fin d'un combat (récupère le résultat 'win' ou 'lose')
+// -------------------------------Fonction appelée à la fin d'un combat (récupère le résultat 'win' ou 'lose')--------------------------------
+
 function onEnd(result) {
     const activeMonster = getActiveMonster();
 
@@ -1196,15 +1225,14 @@ function onEnd(result) {
     
     // Si le joueur a perdu
     if (result === 'lose') {
-        // Vérifie si le monstre peut évoluer après une défaite
         if (activeMonster.evolutionPending) {
-            // Déclenche l'évolution, puis termine le processus
             evolveMonster(activeMonster, activeMonster.evolvesTo);
             return;
         }
 
-        // CORRECTION : Restaure les HP du monstre au maximum en prenant en compte tous les bonus permanents et d'objets.
-        activeMonster.hp = getFinalStats(activeMonster).hp;
+        const finalStats = getFinalStats(activeMonster);
+        activeMonster.hp = finalStats.hp;
+        activeMonster.maxHp = finalStats.hp;
         
         state.currentFloor = 1;
         document.getElementById('backToMain').disabled = false;
@@ -1217,16 +1245,30 @@ function onEnd(result) {
         const xpGain = state.battle.enemy.xpValue;
         activeMonster.xp += xpGain;
         logLine(`${activeMonster.name} gagne ${xpGain} XP !`);
+        
         // Logique de montée de niveau
         if (activeMonster.xp >= activeMonster.xpNeeded) {
-            // Votre code de montée de niveau
+            activeMonster.level++;
+            activeMonster.xp = 0;
+            activeMonster.xpNeeded = xpNeeded(activeMonster.level);
+            
+            // Met à jour les stats de base (sans bonus)
+            activeMonster.baseStats.hp += 2;
+            activeMonster.baseStats.attack += 1;
+            activeMonster.baseStats.defense += 1;
+            activeMonster.baseStats.speed += 1;
+
+            // CORRECTIF : Met à jour les PV actuels et les PV max avec les nouvelles stats de base
+            const newStats = getFinalStats(activeMonster);
+            activeMonster.hp = newStats.hp;
+            activeMonster.maxHp = newStats.hp;
+            
+            showModal('Montée de niveau !', `${activeMonster.name} a atteint le niveau ${activeMonster.level} !`);
         }
         
         // Incrémente le compteur de victoires et vérifie les conditions d'évolution
         activeMonster.victories = (activeMonster.victories || 0) + 1;
         checkEvolution(activeMonster);
-        
-        activeMonster.hp = getFinalStats(activeMonster).hp;
     }
     
     // Nettoyer l'état de la bataille
@@ -1237,6 +1279,8 @@ function onEnd(result) {
     saveState();
 }
 
+// ---------------------------------------Appel du bouton et reglage du bouton VITESSE de combat-------------------------------------------------
+
 function toggleBattleSpeed(){
   state.battle.speedIndex = (state.battle.speedIndex + 1) % SPEED_STEPS.length;
   updateSpeedBtn();
@@ -1245,6 +1289,9 @@ function updateSpeedBtn(){
   const btn = document.getElementById('speedBtn');
   if(btn) btn.textContent = `⚡ Vitesse x${SPEED_STEPS[state.battle.speedIndex]}`;
 }
+
+// ===========================================================================================================================================
+// -------------------------------------------------------Systeme de recupération d'énergie----------------------------------------------------
 
 // ---- Énergie : régénération
 function startEnergyRegen(){
@@ -1258,7 +1305,8 @@ function startEnergyRegen(){
 }
 
 
-// ---- Vendre un monstre
+// ---------------------------------------------------------------- Vendre un monstre---------------------------------------------------------
+
 function sellMonster(monsterId) {
   // Trouver le monstre dans la collection
   const monsterIndex = state.playerMonsters.findIndex(m => m.id === monsterId);
@@ -1297,7 +1345,8 @@ function sellMonster(monsterId) {
   // Si l'utilisateur clique sur "Annuler" (non), le code ne fait rien et le monstre reste.
 }
 
-// Fonction utilitaire pour calculer le prix de base d'un monstre
+// ----------------------------------------------Fonction utilitaire pour calculer le prix de base d'un monstre----------------------------------
+
 // Le prix augmente avec le nombre de monstres déjà obtenus.
 function getMonsterBasePrice(monster) {
   const eggCost = getEggCost(); // On utilise la même fonction pour la vente
@@ -1311,7 +1360,7 @@ function getMonsterBasePrice(monster) {
   return Math.floor(eggCost * rarityMultiplier);
 }
 
-// CODE SERVANT A LA MISE EN PLACE DU TRI DES PETIS MONSTRES DANS LA COLLECTION
+//----------------------------- CODE SERVANT A LA MISE EN PLACE DU TRI DES PETIS MONSTRES DANS LA COLLECTION------------------------------------
 
 function sortMonsters(criteria) {
   state.playerMonsters.sort((a, b) => {
@@ -1342,7 +1391,7 @@ function sortMonsters(criteria) {
 }
 // 
 // 
-// -----------------------------------PROCESSUS D EVOLUTION ----------------------------------------
+// ----------------------------------------------------------PROCESSUS D EVOLUTION------------------- ----------------------------------------
 
 // Trouve les données d'une espèce de monstre par son ID
 function getSpeciesDataById(speciesId) {
@@ -1459,7 +1508,7 @@ function createId() {
 
 
 
-// ------------------------------------- OBJECTIFS JOURNALIERS----------------------------------------------------------
+// ------------------------------------- --------------------OBJECTIFS JOURNALIERS----------------------------------------------------------
 
 // Fonction pour choisir aléatoirement des objectifs uniques
 function generateDailyObjectives() {
@@ -1489,8 +1538,8 @@ function generateDailyObjectives() {
     saveState();
 }
 
-// Affiche l'écran des objectifs quotidiens
-// Affiche l'écran des objectifs quotidiens
+
+// -------------------------------------------------Affiche l'écran des objectifs quotidiens-------------------------------------------------
 function renderObjectives() {
     let html = '<h2>Objectifs du jour</h2>';
     state.dailyObjectives.forEach(obj => {
@@ -1535,7 +1584,8 @@ function claimObjective(id) {
     renderObjectives();
 }
 
-// Fonction d'initialisation du jeu
+// --------------------------------------------------INITIALISATION DU JEU-------------------------------------------------------------------------------
+
 // Fonction d'initialisation du jeu
 function init() {
     const hasSavedGame = localStorage.getItem('monsterBreederState_slot1') !== null;
@@ -1572,6 +1622,9 @@ function bootstrap() {
   // On vérifie s'il y a une sauvegarde pour afficher le bouton 'Continuer'
   checkSavedGameAndShowButton();
 }
+
+// =============================================== PARTIE SAUVEGARDE ET CHARGEMENT=========================================================
+
 function checkSavedGameAndShowButton() {
   const hasSavedGame = localStorage.getItem('monsterBreederState_slot1') !== null ||
                        localStorage.getItem('monsterBreederState_slot2') !== null ||
@@ -1665,12 +1718,16 @@ function resetAndReload(slot) {
   showSaveLoadModal(); // Affiche à nouveau la modale pour voir le changement
 }
 
+
+// -------------------------------------------------DEBUT DE NOUVELLE PARTIE ET SES DATABASE------------------------------------------
+
+
 // Fonction pour lancer une nouvelle partie
 // Fonction pour lancer une nouvelle partie
 function startNewGame() {
   // Réinitialise l'état du jeu pour une nouvelle partie
   state = {
-    gold: 50,
+    gold: 111150,
     energy: ENERGY_MAX,
     currentFloor: 1,
     playerMonsters: [],
@@ -1696,7 +1753,7 @@ function startNewGame() {
   saveState(1); // Sauvegarde la nouvelle partie dans l'emplacement 1
   
   showModal('Bienvenue !', `Vous recevez ${mon.name} pour commencer votre aventure !`);
-  showScreen('main'); // Va sur l'écran principal
+  showScreen('main'); 
   renderMain();
   toggleMusic();
   document.getElementById('game-music').volume = 0.5;
@@ -1708,6 +1765,10 @@ window.onload = function() {
         document.getElementById('continue-button').style.display = 'block';
     }
 };
+
+
+// ---------------------------------------------- GESTION DE LA MUSIQUE---------------------------------------------------------------
+
 
 // Fonction pour gérer la musique du jeu
 function toggleMusic() {

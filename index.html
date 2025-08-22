@@ -46,8 +46,11 @@
       <button class="btn" onclick="showScreen('shop')">Boutique</button>
       <button class="btn" onclick="showScreen('collection')">Mes Monstres</button>
       <button class="btn" onclick="showScreen('inventory')">Inventaire</button> </div>
+      <button class="btn" onclick="showScreen('objectives')">Objectifs</button>
     </div>
   </section>
+
+  <div id="objectives-screen" class="screen hidden"></div>
 
   <!--Ecran inventaire-->
   <section id="inventory-screen" class="screen hidden">
@@ -57,31 +60,47 @@
     <button class="btn" onclick="showScreen('main')">Retour</button>
   </section>
 
-  <!-- Écran boutique -->
+  <!-- Ecran boutique -->
   <section id="shop-screen" class="screen hidden">
-    <h2 style="color: #2C3E50; font-size: 2.5rem; margin-bottom: 30px; font-weight: 600;">Boutique</h2>
-    <div class="shop-grid">
-      <div class="shop-card">
-        <h3>🔥 Améliorations</h3>
-        <div id="upgrades-container"></div>
+      <h2 style="color: #2C3E50; font-size: 2.5rem; margin-bottom: 30px; font-weight: 600;">Boutique</h2>
+      
+      <div class="shop-content-wrapper">
+          <div class="shop-section">
+              <h3>🔥 Améliorations</h3>
+              <div id="upgrades-container" class="shop-inner-grid">
+                  </div>
+          </div>
+
+          <div class="shop-section">
+              <h3>🥚 Œufs</h3>
+              <div id="egg-container" class="shop-inner-grid">
+                  <div class="shop-card">
+                      <img src="image/oeuf-mystere.png" alt="Œuf mystère">
+                      <p>Achetez un œuf mystère pour tenter d'obtenir un monstre de n'importe quelle rareté.</p>
+                      <button class="btn" onclick="buyEgg()">Acheter (<span id="egg-cost-text">200 or</span>)</button>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="shop-section">
+              <h3>✨ Objets Équipables</h3>
+              <div id="item-list" class="shop-inner-grid">
+                  </div>
+          </div>
+          
+          <div class="shop-section">
+              <h3>⚡ Énergie</h3>
+              <div id="energy-container" class="shop-inner-grid">
+                  <div class="shop-card">
+                      <img src="image/energy.png" alt="Énergie">
+                      <p>Rechargez votre énergie pour continuer à combattre.</p>
+                      <button class="btn" onclick="buyEnergy()">+1 Énergie (<span class="cost-text">50 or</span>)</button>
+                  </div>
+              </div>
+          </div>
       </div>
-      <div class="shop-card">
-        <h3>🥚 Œufs</h3>
-        <img src="image/oeuf-mystere.png" alt="Œuf mystère" style="width:100px; height:auto; margin-bottom: 10px;">
-        <p>Achetez un œuf mystère pour tenter d'obtenir un monstre de n'importe quelle rareté.</p>
-        <button class="btn" onclick="buyEgg()">Œuf Mystère (<span id="egg-cost-text">200 or</span>)</button>
-      </div>
-      <div class="shop-card">
-        <h3>✨ Objets Équipables</h3>
-        <div id="item-list"></div>
-      </div>
-      <div class="shop-card">
-        <h3>⚡ Énergie</h3>
-        <button class="btn" onclick="buyEnergy()">+1 Énergie (50 or)</button>
-        <p class="hint">Se régénère aussi automatiquement avec le temps.</p>
-      </div>
-    </div>
-    <button class="btn" onclick="showScreen('main')">Retour</button>
+
+      <button class="btn" onclick="showScreen('main')">Retour</button>
   </section>
 
   <!-- Écran de combat -->
@@ -113,6 +132,18 @@
     <div id="monster-list" class="grid"></div>
     <button class="btn" onclick="showScreen('main')">Retour</button>
   </section>
+
+  <!-- Ecran d'évolution -->
+  <div id="evolution-screen" class="hidden screen">
+    <div class="evolution-container">
+        <h2 id="evolution-title">Évolution !</h2>
+        <div id="evolution-image-container">
+            <img id="evolution-monster-image" src="" alt="Monstre en évolution">
+        </div>
+        <p id="evolution-message"></p>
+        <button id="backToMainFromEvolution" class="btn">Retour au menu principal</button>
+    </div>
+  </div>
 
   <!-- Modale -->
   <div id="modal" class="hidden">

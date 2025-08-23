@@ -111,6 +111,19 @@
       letter-spacing: 0.5px;
     }
 
+    .btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #fff;
+    background: linear-gradient(45deg, #2c3e50, #4a69bd);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
     .btn:hover {
       transform: translateY(-2px) scale(1.05);
       box-shadow: 
@@ -898,4 +911,183 @@
 
 .evolve-animation {
     animation: evolve-transition 4s ease-in-out;
+}
+
+
+/* ====================================================== ROULETTE ======================================================================== */
+
+
+#slots-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: transparent; /* Assure que le fond de la section est transparent */
+    position: relative; /* Positionne le pseudo-élément par rapport à ce conteneur */
+    z-index: 1; /* Place le contenu de l'écran (boutons, texte) au-dessus du fond */
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+}
+
+#slots-screen::before {
+    content: ''; /* Obligatoire pour afficher le pseudo-élément */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('image/bgroulette.png') no-repeat center center/cover;
+    opacity: 0.5; /* Ajustez cette valeur (0.0 pour transparent, 1.0 pour opaque) */
+    z-index: -1; /* Place le fond derrière le contenu de l'écran */
+}
+
+/* Conteneur principal de la roulette (cadre fixe) */
+.slots-machine {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Conteneur de la roulette */
+.slots-reel-container {
+    width: 300px; /* Largeur fixe pour une apparence compacte */
+    height: 150px; /* Hauteur pour afficher 3 symboles à la fois */
+    background: #222; /* Fond sombre pour contraste */
+    border: 5px solid #ffd700; /* Bordure dorée pour un look premium */
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Ombre pour effet 3D */
+    overflow: hidden; /* Masque les symboles qui sortent du cadre */
+    position: relative;
+}
+
+/* Conteneur interne pour les symboles (défilement) */
+.slots-reel {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.reel-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+}
+
+/* Style pour chaque symbole */
+.slot-symbol {
+    width: 100%;
+    height: 50px; /* Chaque symbole occupe 1/3 de la hauteur */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #333, #444); /* Dégradé subtil pour chaque symbole */
+    border-bottom: 1px solid #555; /* Séparation entre symboles */
+}
+
+/* Style pour les images des symboles */
+.slot-symbol img.slot-image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain; /* Assure que l'image s'adapte sans déformation */
+}
+
+/* Style pour le symbole gagnant */
+.slot-symbol.winning-symbol {
+    background: linear-gradient(180deg, #ffd700, #ffec80); /* Fond doré pour le symbole gagnant */
+    border: 2px solid #fff; /* Bordure blanche pour plus de visibilité */
+}
+
+/* Fenêtre de visualisation avec effet lumineux */
+.slots-reel-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 50px; /* Hauteur de la zone centrale (symbole gagnant) */
+    background: rgba(255, 255, 255, 0.3); /* Effet lumineux plus prononcé */
+    border-top: 2px solid #ffd700;
+    border-bottom: 2px solid #ffd700;
+    transform: translateY(-50%);
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Ombre lumineuse */
+}
+
+/* Bouton de rotation */
+.btn-spin {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(45deg, #ff4500, #ff8c00); /* Dégradé orange pour un look dynamique */
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Effet au survol du bouton */
+.btn-spin:hover:not(:disabled) {
+    background: linear-gradient(45deg, #ff8c00, #ffa500);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Bouton désactivé */
+.btn-spin:disabled {
+    background: #666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+
+
+.btn:hover:not(:disabled) {
+    background: linear-gradient(45deg, #4a69bd, #6a89cc);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Style pour le timer */
+.slots-timer {
+    margin-top: 15px;
+    font-size: 1em;
+    color: #ffd700;
+}
+
+/* Media queries pour responsivité */
+@media (max-width: 600px) {
+    .slots-reel-container {
+        width: 200px;
+        height: 100px;
+    }
+    
+    .slot-symbol {
+        height: 33.33px; /* Ajuste la hauteur des symboles pour mobile */
+    }
+    
+    .slot-symbol img.slot-image {
+        width: 28px;
+        height: 28px; /* Taille réduite pour mobile */
+    }
+    
+    .slot-symbol.winning-symbol {
+        border: 1px solid #fff; /* Bordure plus fine sur mobile */
+    }
+    
+    .slots-reel-container::before {
+        height: 33.33px;
+    }
+    
+    .btn-spin, .btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
 }

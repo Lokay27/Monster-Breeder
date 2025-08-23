@@ -47,6 +47,7 @@
       <button class="btn" onclick="showScreen('collection')">Mes Monstres</button>
       <button class="btn" onclick="showScreen('inventory')">Inventaire</button> </div>
       <button class="btn" onclick="showScreen('objectives')">Objectifs</button>
+      <button class="btn" onclick="showScreen('slots')">Récompense Quotidienne</button>
     </div>
   </section>
 
@@ -144,6 +145,20 @@
         <button id="backToMainFromEvolution" class="btn">Retour au menu principal</button>
     </div>
   </div>
+
+  <!-- Ecran de roulette -->
+    <section id="slots-screen" class="screen hidden">
+      <h2 style="color: #2C3E50; font-size: 2.5rem; margin-bottom: 30px; font-weight: 600;">Récompense Quotidienne</h2>
+      <div class="slots-machine">
+          <div id="slots-reel-container" class="slots-reel-container">
+              <div id="slots-reel" class="slots-reel">
+                  </div>
+          </div>
+      </div>
+      <button id="spin-button" class="btn btn-spin">Tenter ma chance !</button>
+      <div id="slots-timer" class="slots-timer"></div>
+      <button class="btn" onclick="showScreen('main')">Retour</button>
+    </section>
 
   <!-- Modale -->
   <div id="modal" class="hidden">

@@ -26,7 +26,7 @@ const ATB_TICK_MS = 200; // tick base
 const ATB_FILL_BASE = 3; // multiplicateur de remplissage par point de vitesse
 const ATB_FULL = 100;
 const MONSTER_SELL_RATE = 0.25; // Vente pour 25% de la valeur de base
-// const EGG_COST = 20; // Coût unique pour l'œuf mystère
+
 const EGG_PROBABILITIES = {
   common: 0.70, // 70% de chance d'avoir un monstre commun pour l'oeuf mystère
   rare: 0.25,   // 25% de chance d'avoir un monstre rare
@@ -35,7 +35,7 @@ const EGG_PROBABILITIES = {
 
 // ---------------------------------------------- CONSTANTE POUR LETYPE DE PETIT MONSTRE----------------------------------------------------------
 
-const TYPE_ADV = { // Tablleau des avantages simple par type
+const TYPE_ADV = { // Tableau des avantages simple par type
   eau: 'feu',
   feu: 'plante',
   plante: 'eau'
@@ -51,7 +51,7 @@ function typeMultiplier(attType, defType){
 
 // ---------------------------------------------------------- Base d'espèces (fixes)--------------------------------------------------------
 // ------------------------------------------------------------Commun ()--------------------------------------------------------------------
-  const SPECIES = {
+const SPECIES = {
   common: [
     // Eau
     { id: 'gouttelette', name: 'Gouttelette', type: 'eau', rarity:'common', attack: 12, defense: 8, hp: 20, image: "image/Eau/gouttelette.png" },
@@ -104,6 +104,7 @@ function typeMultiplier(attType, defType){
     { id: 'bouldard', name: 'Bouldard', type: 'terre', rarity:'rare', attack: 17, defense: 13, hp: 22, image: "image/Terre/bouldard.png" },
     { id: 'terramite', name: 'Terramite', type: 'terre', rarity:'rare', attack: 14, defense: 15, hp: 22, image: "image/Terre/terramite.png" }
   ],
+  
   // -------------------------------------------------------------Épique (2-3 par type)------------------------------------------------------
   epic: [
     { id: 'kraken', name: 'Kraken', type: 'eau', rarity:'epic', attack: 20, defense: 18, hp: 25, image: "image/Eau/kraken.png" },
@@ -119,17 +120,17 @@ function typeMultiplier(attType, defType){
     { id: 'colosse', name: 'Colosse', type: 'terre', rarity:'epic', attack: 20, defense: 20, hp: 25, image: "image/Terre/colosse.png" }
   ]
 };
+
 // -----------------------------------------------------------------Boss-----------------------------------------------------------------------
 const BOSS_SPECIES = [
   { name: 'Dracozor', type: 'feu', rarity: 'epic',  hp: 25, attack: 28, defense: 26, speed: 10 , image: 'image/boss/dracozor.png' },
   { name: 'Hydranox', type: 'eau', rarity: 'epic',  hp: 25, attack: 26, defense: 28, speed: 10 , image: 'image/boss/hydranox.png' },
   { name: 'Gravelor', type: 'terre', rarity: 'epic',  hp: 25, attack: 27, defense: 27, speed: 10 , image: 'image/boss/gravelor.png' },
   { name: 'Broceliox', type: 'plante', rarity: 'epic',  hp: 25, attack: 26, defense: 28, speed: 10 , image: 'image/boss/broceliox.png'},
-  // Ajoutez d'autres boss ici
 ];
+
 // ----------------------------------------------Database Evolution et principe d'évolution--------------------------------------------------------------------
 const EVOLVED_SPECIES = {
-    // La clé est l'ID de la nouvelle forme évoluée
     'hydrolette': { id: 'hydrolette', name: 'Hydrolette', type: 'eau', rarity: 'common', attack: 15, defense: 10, speed: 8, hp: 25, image: "image/Eau/hydrolette.png" },
     'pyronis': { id: 'pyronis', name: 'Pyronis', type: 'feu', rarity: 'common', attack: 20, defense: 8, speed: 8, hp: 25, image: "image/Feu/pyronis.png" },
     'mycolos': { id: 'mycolos', name: 'Mycolos', type: 'plante', rarity: 'common', attack: 14, defense: 17, speed: 8, hp: 25, image: "image/Plante/mycolos.png" },
@@ -139,11 +140,10 @@ const EVOLVED_SPECIES = {
     'sirenalia': { id: 'sirenalia', name: 'Sirenalia', type: 'eau', rarity: 'rare', attack: 22, defense: 15, speed: 8, hp: 27, image: "image/Eau/sirenalia.png" },
     'vaguesenior': { id: 'vaguesenior', name: 'Vague Sénior', type: 'eau', rarity: 'common', attack: 17, defense: 12, speed: 8, hp: 25, image: "image/Eau/vaguesenior.png" },
     'vegetoss': { id: 'vegetoss', name: 'Vegetoss', type: 'plante', rarity: 'common', attack: 16, defense: 14, speed: 8, hp: 25, image: "image/Plante/vegetoss.png" },
-    'squirfeuil': { id: 'squirfeuil', name: 'Squirfeuil', type: 'plante', rarity: 'rare', attack: 19, defense: 19, speed: 8, hp: 27, image: "image/Plante/vegetoss.png" },
+    'squirfeuil': { id: 'squirfeuil', name: 'Squirfeuil', type: 'plante', rarity: 'rare', attack: 19, defense: 19, speed: 8, hp: 27, image: "image/Plante/squirfeuil.png" },
 };
 
 const EVOLUTIONS = {
-    // La clé est l'ID du monstre de base (qui a un ID dans SPECIES)
     'gouttelette': {evolvesTo: 'hydrolette', condition: {level: 20, victories: 3000}},
     'pyron': {evolvesTo: 'pyronis', condition: {level: 20, victories: 3000}},
     'champi': {evolvesTo: 'mycolos', condition: {level: 20, victories: 3000}},
@@ -154,7 +154,6 @@ const EVOLUTIONS = {
     'vaguejunior': {evolvesTo: 'vaguesenior', condition: {level: 20, victories: 3000}},
     'mousseur': {evolvesTo: 'vegetoss', condition: {level: 20, victories: 3000}},
     'squirel': {evolvesTo: 'squirfeuil', condition: {level: 35, victories: 13000}},
-    // Ajoutez d'autres évolutions ici (ex: 'braizon' évolue en 'salamandre')
 };
 
 // -----------------------------------------------------------ITEMS DANS LA BOUTIQUE-------------------------------------------------------------
@@ -169,6 +168,9 @@ const ITEMS = [
   { id: '4', name: 'Potion de Vie', type: 'hp', rarity: 'common', price: 100, bonus: 5, image: 'image/items/potionvie1.png', description: '+5 PV' , },
   { id: '5', name: 'Potion de Vie', type: 'hp', rarity: 'rare', price: 500, bonus: 10, image: 'image/items/potionvie2.png', description: '+10 PV',  },
   { id: '6', name: 'Potion de Vie', type: 'hp', rarity: 'epic', price: 1500, bonus: 20, image: 'image/items/potionvie3.png', description: '+20 PV', },
+  {id: 'xp_boost_200',name: 'Jeton d\'XP (200)',price: 1000, description: 'Ajoute 200 points d\'expérience au monstre actif.',type: 'xp', bonus: 200, image: 'image/items/xp200.png',sellValue: 0,rarity: 'common',},
+  {id: 'xp_boost_500',name: 'Jeton d\'XP (500)',price: 2300, description: 'Ajoute 500 points d\'expérience au monstre actif.',type: 'xp', bonus: 500, image: 'image/items/xp500.png',sellValue: 0,rarity: 'rare',},
+  {id: 'energyboost10',name: 'Jeton d\'Energie (10)',price: 480, description: 'Ajoute 10 points d\'énergie.',type: 'energy', bonus: 10, image: 'image/items/energy10.png',sellValue: 0,rarity: 'commun',},
 ];
 
 // ---------------------------------------------------------ITEMS DE VICTOIRE DE BOSS-------------------------------------------------------------------
@@ -176,10 +178,8 @@ const BOSS_LOOT_TABLE = [
     {id: 'ancient_amulet', name: 'Amulette Ancienne', type: 'speed', statModifiers: { speed: { min: 0.15, max: 0.30 } }, price: 5000, rarity: 'legendary', image: 'image/items/amuletteancienne.png', description: '',},
     {id: 'legendary_sword',name: 'Épée Légendaire',type: 'attack',statModifiers: { attack: { min: 0.10, max: 0.20 } },price: 5000,rarity: 'legendary',image: 'image/items/épéelégendaire.png', description: '', },
     {id: 'bouclierlegendaire',name: 'Bouclier Légendaire',type: 'defense',statModifiers: { defense: { min: 0.10, max: 0.20 } },price: 5000,rarity: 'legendary',image: 'image/items/bouclierlegendaire.png', description: '', },
-    {id: 'coeureternite',name: 'Coeur éternel',type: 'hp',statModifiers: { hp: { min: 0.10, max: 0.20 } },price: 5000,rarity: 'legendary',image: 'image/items/coeureternite.png', description: '', },
+    {id: 'coeureternite',name: 'Coeur éternité',type: 'hp',statModifiers: { hp: { min: 0.10, max: 0.20 } },price: 5000,rarity: 'legendary',image: 'image/items/coeureternite.png', description: '', },
 ];
-
-
 
 //-------------------------------------------- Définition des objectifs quotidiens possibles--------------------------------------------------------
 const DAILY_OBJECTIVES = [
@@ -221,7 +221,7 @@ const DAILY_OBJECTIVES = [
     }
 ];
 
-// ----------------------------- Constantes pour les amélioration de la Boutique------------------------------------------------------------
+// ----------------------------- Constantes pour les améliorations de la Boutique------------------------------------------------------------
 const SHOP_UPGRADES = {
   attack: {
     name: "Amélioration d'Attaque",
@@ -249,8 +249,10 @@ let state = {
     intervalId: null
   },
   playerItems: [],
-  dailyObjectives: [], // Tableau pour les objectifs du jour
+  dailyObjectives: [],
+  lastObjectiveReset: null,
   lastObjectiveReset: null, // Horodatage de la dernière réinitialisation
+  lastRouletteSpin: null,
 };
 
 // ------------------------------------------------------------------- Helpers----------------------------------------------------------------
@@ -269,7 +271,10 @@ function showScreen(id) {
     let targetId;
     if (id === 'evolution') {
         targetId = 'evolution-screen';
-    } else {
+    }  else if (id === 'slots') {
+        targetId = 'slots-screen';
+        initSlotsScreen();
+    }else {
         targetId = id + '-screen';
     }
 
@@ -296,16 +301,12 @@ function showModal(title, text, confirmCallback = null) {
   const modal = document.getElementById("modal");
   const modalContent = document.getElementById("modal-content");
   
-  // Créer le HTML du modal de manière dynamique
   let modalHtml = `<h3>${title}</h3><p>${text}</p>`;
 
   if (confirmCallback) {
-    // Si une fonction de rappel est fournie, afficher les boutons Confirmer et Annuler
     modalHtml += `<div class="modal-buttons"><button class="btn" onclick="confirmModal()">Confirmer</button><button class="btn btn-mini" onclick="closeModal()">Annuler</button></div>`;
-    // Stocker la fonction de rappel pour l'exécution
     window.confirmModal = confirmCallback;
   } else {
-    // Si aucune fonction de rappel n'est fournie, afficher un bouton pour fermer
     modalHtml += `<button class="btn" onclick="closeModal()">Fermer</button>`;
   }
   
@@ -319,8 +320,6 @@ function closeModal() {
   window.confirmModal = null;
 }
 
-// ------------------------------------------------------######-----------------------------------------------------------------------------
-
 function getSpecies(monsterName) {
   for (const rarity in SPECIES) {
     const found = SPECIES[rarity].find(species => species.name === monsterName);
@@ -329,6 +328,60 @@ function getSpecies(monsterName) {
     }
   }
   return null;
+}
+
+// ================================================================================================
+// SYSTÈME UNIFIÉ DE GESTION DES STATS
+// ================================================================================================
+
+/**
+ * Fonction centrale pour calculer les statistiques finales d'un monstre
+ * Prend en compte : stats de base + bonus permanents + bonus d'objets équipés
+ */
+function getFinalStats(monster) {
+    if (!monster) return { hp: 0, attack: 0, defense: 0, speed: 0 };
+    
+    // Stats de base + bonus permanents (montée de niveau, améliorations boutique)
+    const baseStats = {
+        hp: monster.baseStats.hp + monster.statBonus.hp,
+        attack: monster.baseStats.attack + monster.statBonus.attack,
+        defense: monster.baseStats.defense + monster.statBonus.defense,
+        speed: monster.baseStats.speed + monster.statBonus.speed
+    };
+    
+    // Ajout des bonus d'objets équipés
+    const finalStats = { ...baseStats };
+    
+    if (monster.equippedItems) {
+        Object.values(monster.equippedItems).forEach(item => {
+            if (item.bonus) {
+                // Pour les objets avec bonus fixe
+                if (finalStats[item.type] !== undefined) {
+                    finalStats[item.type] += item.bonus;
+                }
+            }
+            
+            if (item.stats) {
+                // Pour les objets légendaires avec bonus en pourcentage
+                Object.keys(item.stats).forEach(stat => {
+                    if (finalStats[stat] !== undefined) {
+                        const percentBonus = item.stats[stat];
+                        finalStats[stat] = Math.floor(finalStats[stat] * (1 + percentBonus));
+                    }
+                });
+            }
+        });
+    }
+    
+    return finalStats;
+}
+
+/**
+ * Fonction pour s'assurer que les HP d'un monstre restent dans les limites valides
+ */
+function validateMonsterHP(monster) {
+    const finalStats = getFinalStats(monster);
+    monster.hp = Math.max(0, Math.min(monster.hp, finalStats.hp));
 }
 
 // -------------------------------- Création d'un monstre depuis une espèce fixe avec variabilité----------------------------------------------
@@ -341,21 +394,21 @@ function createMonsterFromSpecies(species) {
     const randomStat = (baseStat) => {
         const min = Math.floor(baseStat * (1 - variance));
         const max = Math.floor(baseStat * (1 + variance));
-        return Math.max(1, rand(min, max)); // Minimum de 1
+        return Math.max(1, rand(min, max));
     };
 
     const randomHp = (baseHp) => {
         const min = Math.floor(baseHp * (1 - variance));
         const max = Math.floor(baseHp * (1 + variance));
-        return Math.max(10, rand(min, max)); // Minimum de 10 PV
+        return Math.max(10, rand(min, max));
     };
 
-    const attack = randomStat(species.attack);
-    const defense = randomStat(species.defense);
-    const speed = Math.max(3, randomStat(spdBase)); // Vitesse min de 3
-    const maxHp = randomHp(species.hp);
+    const baseAttack = randomStat(species.attack);
+    const baseDefense = randomStat(species.defense);
+    const baseSpeed = Math.max(3, randomStat(spdBase));
+    const baseHp = randomHp(species.hp);
 
-    return {
+    const monster = {
         id: createId(),
         species: species.id,
         name: species.name,
@@ -365,19 +418,15 @@ function createMonsterFromSpecies(species) {
         level: 1,
         xp: 0,
         xpNeeded: 100,
-        hp: maxHp,
-        attack: attack,
-        defense: defense,
-        speed: speed,
-        maxHp: maxHp, // Ajout de la stat maxHp
-        // Stats de base du monstre (valeurs randomisées)
+        hp: baseHp,
+        // Stats de base du monstre (valeurs randomisées à la création)
         baseStats: {
-            hp: maxHp,
-            attack: attack,
-            defense: defense,
-            speed: speed
+            hp: baseHp,
+            attack: baseAttack,
+            defense: baseDefense,
+            speed: baseSpeed
         },
-        // Améliorations de stats qui seront gardées
+        // Améliorations de stats qui seront gardées (montées de niveau, boutique)
         statBonus: {
             attack: 0,
             defense: 0,
@@ -387,36 +436,38 @@ function createMonsterFromSpecies(species) {
         victories: 0,
         equippedItems: {}
     };
+
+    return monster;
 }
 
-// ---- -----------------------------------------------Accès & rendu de chaque écran------------------------------------------------------------------
+// ---- Accès & rendu de chaque écran------------------------------------------------------------------
 
 function getActiveMonster(){ return state.playerMonsters.find(m=>m.id===state.activeMonsterId); }
+
 function renderMain(){
     document.getElementById('gold').textContent = state.gold;
     document.getElementById('energy').textContent = state.energy;
     document.getElementById('energy-max').textContent = ENERGY_MAX;
     document.getElementById('floor').textContent = state.currentFloor;
+    
     const container = document.getElementById('active-monster');
     const m = getActiveMonster();
+    
     if(!m){
         container.innerHTML = `<div class="card"><p>Aucun monstre actif. Achetez un œuf dans la boutique !</p></div>`;
         return;
     }
     
-    // Utilisation de la nouvelle fonction pour obtenir les stats finales
+    // Utilisation de la fonction unifiée pour obtenir les stats finales
     const finalStats = getFinalStats(m);
     
-    // CORRECTION : S'assurer que les HP actuels ne dépassent jamais les HP max
-    if (m.hp > finalStats.hp) {
-        m.hp = finalStats.hp;
-        saveState(); // Sauvegarder la correction
-    }
+    // Validation des HP
+    validateMonsterHP(m);
     
     const hpPct = clamp((m.hp/finalStats.hp)*100,0,100);
     const xpPct = clamp((m.xp/m.xpNeeded)*100,0,100);
 
-    // Générer l'HTML pour les objets équipés
+    // Génération de l'HTML pour les objets équipés
     const equippedItemsHtml = Object.values(m.equippedItems).map(item => `
         <div class="equipped-item rarety-${item.rarity}">
             <img src="${item.image}" alt="${item.name}" class="item-icon">
@@ -445,73 +496,74 @@ function renderMain(){
 }
 
 function renderCollection() {
-  const list = document.getElementById('monster-list');
-  list.innerHTML = '';
-  state.playerMonsters.forEach(m => {
-    const hpPct = clamp((m.hp / m.maxHp) * 100, 0, 100);
-    const xpPct = clamp((m.xp / m.xpNeeded) * 100, 0, 100);
-    const div = document.createElement('div');
-    div.className = 'card';
+    const list = document.getElementById('monster-list');
+    list.innerHTML = '';
+    
+    state.playerMonsters.forEach(m => {
+        const finalStats = getFinalStats(m);
+        const hpPct = clamp((m.hp / finalStats.hp) * 100, 0, 100);
+        const xpPct = clamp((m.xp / m.xpNeeded) * 100, 0, 100);
+        
+        const div = document.createElement('div');
+        div.className = 'card';
 
-    const isActive = m.id === state.activeMonsterId;
-    const sellBtnText = isActive ? 'Actif' : `Vendre (${getMonsterSellPrice(m)} or)`;
-    const sellBtnDisabled = isActive ? 'disabled' : '';
+        const isActive = m.id === state.activeMonsterId;
+        const sellBtnText = isActive ? 'Actif' : `Vendre (${getMonsterSellPrice(m)} or)`;
+        const sellBtnDisabled = isActive ? 'disabled' : '';
 
-    let maxFloorHTML = '';
-    if (m.maxFloor !== undefined) {
-      maxFloorHTML = `<div class="statline">Étage max : ${m.maxFloor}</div>`;
-    }
+        let maxFloorHTML = '';
+        if (m.maxFloor !== undefined) {
+            maxFloorHTML = `<div class="statline">Étage max : ${m.maxFloor}</div>`;
+        }
 
-    div.innerHTML = `
-      <img class="monster-img" src="${m.image}" alt="${m.name}">
-      <h3>${m.name} <span class="badge ${m.rarity}">${m.rarity.toUpperCase()}</span></h3>
-      <div class="statline">Type : ${m.type} — Niveau ${m.level}</div>
-      <div class="bar hpbar"><div class="hpfill" style="width:${hpPct}%"></div></div>
-      <div class="bar xpbar"><div class="xpfill" style="width:${xpPct}%"></div></div>
-      <div class="statline">ATQ ${m.attack} • DEF ${m.defense} • VIT ${m.speed} • PV ${m.hp}/${m.maxHp}</div>
-      ${maxFloorHTML} <div class="row">
-        <button class="btn" onclick="setActiveMonster('${m.id}')">Activer</button>
-        <button class="btn btn-mini" ${sellBtnDisabled} onclick="sellMonster('${m.id}')">${sellBtnText}</button>
-      </div>
-    `;
-    list.appendChild(div);
-  });
+        div.innerHTML = `
+            <img class="monster-img" src="${m.image}" alt="${m.name}">
+            <h3>${m.name} <span class="badge ${m.rarity}">${m.rarity.toUpperCase()}</span></h3>
+            <div class="statline">Type : ${m.type} — Niveau ${m.level}</div>
+            <div class="bar hpbar"><div class="hpfill" style="width:${hpPct}%"></div></div>
+            <div class="bar xpbar"><div class="xpfill" style="width:${xpPct}%"></div></div>
+            <div class="statline">ATQ ${finalStats.attack} • DEF ${finalStats.defense} • VIT ${finalStats.speed} • PV ${m.hp}/${finalStats.hp}</div>
+            ${maxFloorHTML}
+            <div class="row">
+                <button class="btn" onclick="setActiveMonster('${m.id}')">Activer</button>
+                <button class="btn btn-mini" ${sellBtnDisabled} onclick="sellMonster('${m.id}')">${sellBtnText}</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
 }
 
-
-
-//------------------------------------ Nouvelle fonction utilitaire pour l'affichage du prix---------------------------------------------------
+// Nouvelle fonction utilitaire pour l'affichage du prix
 function getMonsterSellPrice(monster) {
-  const basePrice = getMonsterBasePrice(monster);
-  return Math.floor(basePrice * MONSTER_SELL_RATE);
+    const basePrice = getMonsterBasePrice(monster);
+    return Math.floor(basePrice * MONSTER_SELL_RATE);
 }
+
 // ===========================================================================================================================================
-// ---- ---------------------------------------------------------------Boutique---------------------------------------------------------------
+// ---- Boutique
 // ===========================================================================================================================================
 
-//---------------------------------------------------- Fonction pour les améliorations--------------------------------------------------------
-
+// Fonction pour les améliorations
 function buyUpgrade(stat) {
     const m = getActiveMonster();
     if (!m) return showModal('Aucun monstre', 'Veuillez activer un monstre.');
     
     // Calcule la stat actuelle (stats de base + bonus permanents) pour le calcul du coût
     const currentStatValue = m.baseStats[stat] + m.statBonus[stat];
-    
-    // Le coût est basé sur cette valeur, comme dans votre logique initiale
     const cost = 100 * (currentStatValue + 1);
     
     if (state.gold < cost) {
-        return showModal('Pas assez d\'or', `Il vous faut ${cost} 🪙 pour acheter cette amélioration.`);
+        return showModal('Pas assez d\'or', `Il vous faut ${cost} or pour acheter cette amélioration.`);
     }
 
     state.gold -= cost;
-    
-    // Ajoute le bonus à la bonne propriété
     m.statBonus[stat] += 1;
     
+    // Validation des HP après amélioration
+    validateMonsterHP(m);
+    
     showModal('Amélioration', `Votre monstre a gagné +1 en ${stat} !`);
-    saveState();
+    saveState(1);
     renderMain();
     renderShop();
 }
@@ -520,6 +572,7 @@ function renderUpgradeShop() {
     const upgradesContainer = document.getElementById('upgrades-container');
     upgradesContainer.innerHTML = '';
     const activeMonster = getActiveMonster();
+    
     if (!activeMonster) {
         upgradesContainer.innerHTML = '<p>Veuillez d\'abord sélectionner un monstre pour voir les améliorations.</p>';
         return;
@@ -527,14 +580,9 @@ function renderUpgradeShop() {
 
     for (const stat in SHOP_UPGRADES) {
         const upgrade = SHOP_UPGRADES[stat];
-        
-        // Calcule la stat actuelle (stats de base + bonus permanents)
         const currentStatValue = activeMonster.baseStats[stat] + activeMonster.statBonus[stat];
-        
-        // Calcule le coût basé sur cette valeur
         const cost = 100 * (currentStatValue + 1);
 
-        // Chaque amélioration est maintenant enveloppée dans une div avec la classe shop-card
         const cardHtml = `
             <div class="shop-card">
                 <img src="image/${stat}.png" alt="${upgrade.name}">
@@ -547,145 +595,101 @@ function renderUpgradeShop() {
     }
 }
 
-//------------------------------------------------------ Fonction pour confirmer l'achat d'une amélioration------------------------------------
-function confirmUpgradePurchase(stat, quantity) {
-    const costPerUpgrade = 100;
-    let actualQuantity = quantity;
-    
-    // Gérer le cas où le joueur veut acheter le maximum
-    if (quantity === 'max') {
-        actualQuantity = Math.floor(state.gold / costPerUpgrade);
-        if (actualQuantity === 0) {
-            return showModal('Pas assez d\'or', `Il vous faut au moins ${costPerUpgrade} 🪙 pour acheter une amélioration.`);
-        }
-    } else {
-        actualQuantity = parseInt(quantity, 10);
-    }
-    
-    const totalCost = costPerUpgrade * actualQuantity;
+// DÉFINITION DU PRIX DE BASE DE OEUF
+function getEggCost() {
+    return 50 + state.playerMonsters.length * 50;
+}
 
-    // Afficher la modale de confirmation
+function buyEgg() {
+    const eggCost = getEggCost();
+
     showModal(
         'Confirmation d\'achat',
-        `Voulez-vous acheter ${actualQuantity} améliorations de ${stat} pour ${totalCost} 🪙 ?`,
+        `Voulez-vous acheter un œuf mystère pour ${eggCost} or ?`,
         () => {
-            // Fonction de rappel qui sera exécutée si le joueur confirme l'achat
-            buyUpgrade(stat, actualQuantity);
+            if (state.gold < eggCost) {
+                showModal('Pas assez d\'or', `Il vous faut au moins ${eggCost} or pour acheter cet œuf mystère.`);
+                return;
+            }
+
+            state.gold -= eggCost;
+
+            // Tirage aléatoire pour déterminer la rareté
+            const roll = Math.random();
+            let selectedRarity = '';
+            if (roll < EGG_PROBABILITIES.epic) {
+                selectedRarity = 'epic';
+            } else if (roll < EGG_PROBABILITIES.epic + EGG_PROBABILITIES.rare) {
+                selectedRarity = 'rare';
+            } else {
+                selectedRarity = 'common';
+            }
+
+            // Choisir un monstre aléatoire de la rareté sélectionnée
+            const randomSpecies = choice(SPECIES[selectedRarity]);
+            const newMonster = createMonsterFromSpecies(randomSpecies);
+
+            // Ajouter le nouveau monstre
+            state.playerMonsters.push(newMonster);
+            state.dailyObjectives.forEach(obj => {
+                if (obj.type === 'capture') {
+                    obj.current += 1;
+                }
+            });
+            saveState(1);
+
+            showModal('Félicitations !', `Vous avez fait éclore un ${newMonster.rarity} ${newMonster.name} !`);
+            renderCollection();
+            renderMain();
+            renderShop();
         }
     );
 }
 
-// --------------------------------------------------------DEFINITION DU PRIX DE BASE DE OEUF--------------------------------------------------
-function getEggCost() {
-  return 50 + state.playerMonsters.length * 50;
-}
-
-function buyEgg() {
-  const eggCost = getEggCost();
-
-  showModal(
-    'Confirmation d\'achat',
-    `Voulez-vous acheter un œuf mystère pour ${eggCost} or ?`,
-    () => { // Ceci est la fonction de rappel
-      // Vérifie si le joueur a assez d'or
-      if (state.gold < eggCost) {
-        showModal('Pas assez d\'or', `Il vous faut au moins ${eggCost} or pour acheter cet œuf mystère.`);
-        return;
-      }
-
-      // Déduit le coût de l'œuf
-      state.gold -= eggCost;
-
-      // Tirage aléatoire pour déterminer la rareté
-      const roll = Math.random();
-      let selectedRarity = '';
-      if (roll < EGG_PROBABILITIES.epic) {
-        selectedRarity = 'epic';
-      } else if (roll < EGG_PROBABILITIES.epic + EGG_PROBABILITIES.rare) {
-        selectedRarity = 'rare';
-      } else {
-        selectedRarity = 'common';
-      }
-
-      // Choisir un monstre aléatoire de la rareté sélectionnée
-      const randomSpecies = choice(SPECIES[selectedRarity]);
-      const newMonster = createMonsterFromSpecies(randomSpecies);
-
-      // Ajouter le nouveau monstre
-      state.playerMonsters.push(newMonster);
-      state.dailyObjectives.forEach(obj => {
-          if (obj.type === 'capture') {
-              obj.current += 1;
-          }
-      });
-      saveState();
-
-      // Afficher le message de confirmation et mettre à jour l'affichage
-      showModal('Félicitations !', `Vous avez fait éclore un ${newMonster.rarity} ${newMonster.name} !`);
-      renderCollection();
-      renderMain();
-      renderShop();
-    }
-  );
-}
-
-// La fonction renderShop utilise maintenant getEggCost
 function renderShop(){
     const eggCost = getEggCost();
     document.getElementById('egg-cost-text').textContent = `${eggCost} or`;
-
-    // Affiche la section des améliorations
     renderUpgradeShop();
-
-    // Affiche la nouvelle section d'objets
     renderItemShop(); 
 }
 
-function hatchEgg(rarity){
-  const pool = SPECIES[rarity];
-  if(!pool || !pool.length) return showModal('Œuf vide', `Aucune espèce définie pour ${rarity}.`);
-  const species = choice(pool);
-  const mon = createMonsterFromSpecies(species);
-  state.playerMonsters.push(mon);
-  if(!state.activeMonsterId) state.activeMonsterId = mon.id;
-  showModal('Œuf éclos', `Vous obtenez <b>${mon.name}</b> (${mon.type}, ${mon.rarity}) avec des statistiques uniques !`);
-}
-
-// -----------------------------------------------ACHAT DES OBJETS et gestion des objets----------------------------------------------------------------------------
+// ACHAT DES OBJETS et gestion des objets
 function buyItem(itemId) {
-  const itemToBuy = ITEMS.find(item => item.id === itemId);
-  if (!itemToBuy) {
-    console.error('Erreur: objet non trouvé');
-    return;
-  }
-  
-  // Afficher un modal de confirmation
-  showModal(
-    'Confirmation d\'achat',
-    `Voulez-vous acheter "${itemToBuy.name}" pour ${itemToBuy.price} 🪙 ?`,
-    () => { // Ceci est la fonction de rappel
-      // Vérifier si le joueur a assez d'or
-      if (state.gold < itemToBuy.price) {
-        showModal('Pas assez d\'or', `Il vous faut au moins ${itemToBuy.price} 🪙 pour acheter cet objet.`);
+    const itemToBuy = ITEMS.find(item => item.id === itemId);
+    if (!itemToBuy) {
+        console.error('Erreur: objet non trouvé');
         return;
-      }
-
-      // Déduire le coût et ajouter l'objet à l'inventaire du joueur
-      state.gold -= itemToBuy.price;
-      state.playerItems.push(itemToBuy);
-      saveState();
-
-      // Mettre à jour l'affichage et afficher une confirmation
-      renderMain();
-      showModal('Achat réussi !', `Vous avez acheté ${itemToBuy.name}. Il a été ajouté à votre inventaire !`);
     }
-  );
-}
+    
+    showModal(
+        'Confirmation d\'achat',
+        `Voulez-vous acheter "${itemToBuy.name}" pour ${itemToBuy.price} or ?`,
+        () => {
+            if (state.gold < itemToBuy.price) {
+                showModal('Pas assez d\'or', `Il vous faut au moins ${itemToBuy.price} or pour acheter cet objet.`);
+                return;
+            }
 
+            state.gold -= itemToBuy.price;
+            
+            // CORRECTION : Ajouter un uniqueId à l'objet acheté
+            const purchasedItem = { 
+                ...itemToBuy, 
+                uniqueId: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+            };
+            
+            state.playerItems.push(purchasedItem);
+            saveState(1);
+
+            renderMain();
+            showModal('Achat réussi !', `Vous avez acheté ${itemToBuy.name}. Il a été ajouté à votre inventaire !`);
+        }
+    );
+}
 
 function renderItemShop() {
     const itemList = document.getElementById('item-list');
-    itemList.innerHTML = ''; // Nettoyer la liste
+    itemList.innerHTML = '';
     
     ITEMS.forEach(item => {
         const itemHtml = `
@@ -693,7 +697,7 @@ function renderItemShop() {
                 <img src="${item.image}" alt="${item.name}" class="item-image">
                 <p>${item.name}</p>
                 <p>${item.description}</p>
-                <button class="btn" onclick="buyItem('${item.id}')">Acheter (${item.price} 🪙)</button>
+                <button class="btn" onclick="buyItem('${item.id}')">Acheter (${item.price} or)</button>
             </div>
         `;
         itemList.innerHTML += itemHtml;
@@ -706,82 +710,111 @@ function renderInventory() {
     
     if (state.playerItems.length === 0) {
         inventoryGrid.innerHTML = '<p>Votre inventaire est vide.</p>';
+        return;
     }
     
     state.playerItems.forEach((item, index) => {
-        const isEquipped = state.playerMonsters.some(m => Object.values(m.equippedItems).includes(item));
+        const activeMonster = getActiveMonster();
+        const isEquipped = activeMonster && Object.values(activeMonster.equippedItems).some(equippedItem => 
+            equippedItem.uniqueId === item.uniqueId
+        );
         
-        // Calcule la valeur de vente de l'objet
-        const sellPrice = Math.floor(item.price * 0.25);
+        const sellPrice = Math.floor((item.price || 0) * 0.25);
         
         const itemCard = document.createElement('div');
         itemCard.className = `card item-card rarety-${item.rarity}`;
+        
         itemCard.innerHTML = `
             <h3>${item.name}</h3>
             <p>${item.description}</p>
             <img src="${item.image}" alt="${item.name}" class="item-image">
-            <p>Valeur: ${sellPrice} 🪙</p>
-            ${isEquipped ?
-                `<button class="btn btn-unequip" onclick="unequipItem('${item.type}')">Déséquiper</button>`
-                :
-                `<button class="btn btn-equip" onclick="equipItem('${item.id}')">Équiper</button>
-                 <button class="btn btn-sell" onclick="sellItem(${index})">Vendre</button>`
-            }
+            <p>Valeur: ${sellPrice} or</p>
         `;
+        
+        // Différenciation des boutons selon le type d'objet
+        const isConsumable = ['xp', 'energy'].includes(item.type);
+        
+        if (isConsumable) {
+            // Objets consommables : bouton "Utiliser" et "Vendre"
+            itemCard.innerHTML += `
+                <div class="item-actions">
+                    <button class="btn btn-use" onclick="useItem('${item.uniqueId}')">Utiliser</button>
+                    <button class="btn btn-sell" onclick="sellItem(${index})">Vendre</button>
+                </div>
+            `;
+        } else {
+            // Objets équipables : logique existante
+            if (isEquipped) {
+                itemCard.innerHTML += `
+                    <button class="btn btn-unequip" onclick="unequipItem('${item.type}')">Déséquiper</button>
+                `;
+            } else {
+                itemCard.innerHTML += `
+                    <div class="item-actions">
+                        <button class="btn btn-equip" onclick="equipItem('${item.uniqueId}')">Équiper</button>
+                        <button class="btn btn-sell" onclick="sellItem(${index})">Vendre</button>
+                    </div>
+                `;
+            }
+        }
+        
         inventoryGrid.appendChild(itemCard);
     });
-    
-    if(state.playerItems.length === 0 && Object.keys(state.activeMonsterId && getActiveMonster().equippedItems || {}).length > 0){
-        inventoryGrid.innerHTML += `<p>Tous vos objets sont équipés sur vos monstres.</p>`;
-    }
 }
 
 function sellItem(index) {
     const item = state.playerItems[index];
 
     if (item) {
-        // Calcule le prix de vente en tant que 25% du prix d'achat
         const sellPrice = Math.floor(item.price * 0.25); 
-        
-        // Ajouter la valeur de vente à l'or du joueur
         state.gold += sellPrice;
-        
-        // Retirer l'objet de l'inventaire
         state.playerItems.splice(index, 1);
         
-        // Mettre à jour l'affichage
         renderInventory();
         renderMain();
         
-        // Afficher un message de confirmation
-        showModal('Objet vendu !', `Vous avez vendu ${item.name} pour ${sellPrice} 🪙.`);
+        showModal('Objet vendu !', `Vous avez vendu ${item.name} pour ${sellPrice} or.`);
+        saveState(1);
     }
 }
 
-function equipItem(itemId) {
-  const itemIndex = state.playerItems.findIndex(item => item.id === itemId);
-  if (itemIndex === -1) {
-    showModal('Erreur', 'Cet objet n\'est pas dans votre inventaire.');
-    return;
-  }
-  const itemToEquip = state.playerItems[itemIndex];
-  const activeMonster = getActiveMonster();
-  if (!activeMonster) {
-    showModal('Erreur', 'Aucun monstre actif pour équiper cet objet.');
-    return;
-  }
-  const existingItem = activeMonster.equippedItems[itemToEquip.type];
-  if (existingItem) {
-    state.playerItems.push(existingItem);
-  }
-  activeMonster.equippedItems[itemToEquip.type] = itemToEquip;
-  state.playerItems.splice(itemIndex, 1);
-  activeMonster.hp = getFinalStats(activeMonster).hp;
-  
-  saveState();
-  renderMain();
-  renderInventory();
-  showModal('Objet équipé !', `Vous avez équipé "${itemToEquip.name}" sur votre monstre.`);
+function equipItem(uniqueId) {
+    const itemIndex = state.playerItems.findIndex(item => item.uniqueId === uniqueId);
+    if (itemIndex === -1) {
+        showModal('Erreur', 'Cet objet n\'est pas dans votre inventaire.');
+        return;
+    }
+    
+    const itemToEquip = state.playerItems[itemIndex];
+    const activeMonster = getActiveMonster();
+    if (!activeMonster) {
+        showModal('Erreur', 'Aucun monstre actif pour équiper cet objet.');
+        return;
+    }
+    
+    // Vérifie si c'est un objet équipable
+    if (['xp', 'energy'].includes(itemToEquip.type)) {
+        showModal('Erreur', 'Cet objet ne peut pas être équipé. Utilisez le bouton "Utiliser".');
+        return;
+    }
+    
+    // Déséquipe l'objet existant du même type s'il y en a un
+    const existingItem = activeMonster.equippedItems[itemToEquip.type];
+    if (existingItem) {
+        state.playerItems.push(existingItem);
+    }
+    
+    // Équipe le nouvel objet
+    activeMonster.equippedItems[itemToEquip.type] = itemToEquip;
+    state.playerItems.splice(itemIndex, 1);
+    
+    // Validation des HP après équipement
+    validateMonsterHP(activeMonster);
+    
+    saveState(1);
+    renderMain();
+    renderInventory();
+    showModal('Objet équipé !', `Vous avez équipé "${itemToEquip.name}" sur votre monstre.`);
 }
 
 function unequipAllItems() {
@@ -790,21 +823,20 @@ function unequipAllItems() {
         showModal('Impossible', 'Votre monstre n\'a pas d\'objets équipés.');
         return;
     }
+    
     Object.values(activeMonster.equippedItems).forEach(item => {
         state.playerItems.push(item);
     });
     activeMonster.equippedItems = {};
     
-    // Mettre à jour les HP actuels après avoir déséquipé les objets
-    const finalStats = getFinalStats(activeMonster);
-    activeMonster.hp = Math.min(activeMonster.hp, finalStats.hp);
+    // Validation des HP après déséquipement
+    validateMonsterHP(activeMonster);
 
-    saveState();
+    saveState(1);
     renderMain();
     renderInventory();
     showModal('Déséquipement réussi !', 'Tous les objets ont été déséquipés et remis dans votre inventaire.');
 }
-
 
 function generateRandomBonus(min, max) {
     return Math.random() * (max - min) + min;
@@ -813,21 +845,18 @@ function generateRandomBonus(min, max) {
 function createItemInstance(itemData) {
     const newItem = {
         ...itemData,
-        id: Math.random().toString(36).slice(2), // Crée un ID unique pour l'instance
+        id: Math.random().toString(36).slice(2),
         description: "",
-        stats: {} // Ceci est très important pour la fonction applyEquippedItems
+        stats: {}
     };
 
     if (itemData.statModifiers) {
         for (const stat in itemData.statModifiers) {
             const min = itemData.statModifiers[stat].min;
             const max = itemData.statModifiers[stat].max;
-            // Génère une valeur aléatoire entre min et max
             const bonusValue = Math.random() * (max - min) + min;
-            // Crée la description
             const bonusPercent = Math.round(bonusValue * 100);
             newItem.description = `+${bonusPercent}% de ${stat.toUpperCase()}`;
-            // Ajoute le bonus calculé à l'objet
             newItem.stats[stat] = bonusValue;
         }
     }
@@ -838,92 +867,72 @@ function setActiveMonster(monsterId) {
     // 1. Déséquiper l'ancien monstre actif
     const oldActiveMonster = getActiveMonster();
     if (oldActiveMonster) {
-        // Remettre tous les objets équipés dans l'inventaire
         Object.values(oldActiveMonster.equippedItems).forEach(item => {
             state.playerItems.push(item);
         });
-        // Vider l'objet des équipements de l'ancien monstre
         oldActiveMonster.equippedItems = {};
-        // S'assurer que les PV sont remis à la normale
-        
-        // CORRECTION : S'assurer que les PV sont remis à la normale, en utilisant getFinalStats
-        oldActiveMonster.hp = Math.min(oldActiveMonster.hp, getFinalStats(oldActiveMonster).hp);
+        validateMonsterHP(oldActiveMonster);
     }
 
     // 2. Définir le nouveau monstre actif
     state.activeMonsterId = monsterId;
 
-    saveState();
+    saveState(1);
     renderMain();
     renderInventory();
-    showScreen('main'); // <-- NOUVEAU : on retourne à l'écran principal
+    showScreen('main');
 }
 
-
-// --------------------------------------------------------- Achat d'énergies -------------------------------------------------------------------
+// Achat d'énergies
 function buyEnergy(){
-  const cost = 50;
-  
-  if(state.gold < cost) {
-    showModal('Pas assez d\'or', `Il faut ${cost} or.`);
-    return;
-  }
-  
-  if(state.energy >= ENERGY_MAX) {
-    showModal('Énergie au max', 'Vous avez déjà le maximum d\'énergie !');
-    return;
-  }
-  
-  state.gold -= cost;
-  state.energy = clamp(state.energy+1, 0, ENERGY_MAX);
-  
-  // Cette ligne a été ajoutée pour afficher un message de confirmation
-  showModal('Achat d\'énergie', `Vous avez acheté 1 point d'énergie !`);
-  
-  renderMain();
-  saveState();
+    const cost = 50;
+    
+    if(state.gold < cost) {
+        showModal('Pas assez d\'or', `Il faut ${cost} or.`);
+        return;
+    }
+    
+    if(state.energy >= ENERGY_MAX) {
+        showModal('Énergie au max', 'Vous avez déjà le maximum d\'énergie !');
+        return;
+    }
+    
+    state.gold -= cost;
+    state.energy = clamp(state.energy+1, 0, ENERGY_MAX);
+    
+    showModal('Achat d\'énergie', `Vous avez acheté 1 point d'énergie !`);
+    
+    renderMain();
+    saveState(1);
 }
 
 // ===========================================================================================================================================
-// -------------------------------------------------- Calcul de statistique------------------------------------------------------------------
+// XP & montée de niveau (CORRIGÉE)
 // ===========================================================================================================================================
 
-// ----------------------------------------Fonction pour calculer les stats finales (base + bonus)-------------------------------------------
-function getFinalStats(m) {
-    if (!m) return {};
-    return {
-        hp: m.baseStats.hp + m.statBonus.hp + (m.equippedItems.hp ? m.equippedItems.hp.bonus : 0),
-        attack: m.baseStats.attack + m.statBonus.attack + (m.equippedItems.attack ? m.equippedItems.attack.bonus : 0),
-        defense: m.baseStats.defense + m.statBonus.defense + (m.equippedItems.defense ? m.equippedItems.defense.bonus : 0),
-        speed: m.baseStats.speed + m.statBonus.speed + (m.equippedItems.speed ? m.equippedItems.speed.bonus : 0),
-    };
-}
-
-// ------------------------------------------------------ XP & montée de niveau-------------------------------------------------------------
 function gainXp(mon, xp) {
     state.dailyObjectives.forEach(obj => {
         if (obj.type === 'xp') {
             obj.current += Math.floor(xp);
         }
     });
+    
     mon.xp += Math.floor(xp);
+    
     while (mon.xp >= mon.xpNeeded) {
         mon.xp -= mon.xpNeeded;
         mon.level += 1;
         
-        // Utilise les statistiques de base aléatoires du monstre
+        // Les bonus de niveau sont stockés dans statBonus (permanents)
         const baseStats = mon.baseStats;
-        
-        // CORRECTION : Les bonus de niveau sont maintenant stockés dans statBonus
         mon.statBonus.attack += Math.max(1, Math.floor(baseStats.attack * 0.1));
         mon.statBonus.defense += Math.max(1, Math.floor(baseStats.defense * 0.1));
-        mon.statBonus.speed += 1; // La vitesse gagne déjà un minimum de 1
+        mon.statBonus.speed += 1;
         mon.statBonus.hp += Math.max(1, Math.floor(baseStats.hp * 0.15));
         
-        // CORRECTION : Met à jour les HP et maxHP correctement après la montée de niveau
+        // Récupération complète des HP après montée de niveau
         const finalStats = getFinalStats(mon);
-        mon.hp = finalStats.hp; // Remet les HP au maximum après montée de niveau
-        mon.maxHp = finalStats.hp; // Met à jour maxHP
+        mon.hp = finalStats.hp;
         
         mon.xpNeeded = xpNeeded(mon.level);
         showModal('Niveau supérieur', `${mon.name} passe <b>niveau ${mon.level}</b> !`);
@@ -931,482 +940,382 @@ function gainXp(mon, xp) {
     renderMain();
 }
 
-// ===========================================================ZONE DE TOUR ET COMBAT===========================================================
-// ------------------------------------------------ Activation de la tour et des combats-----------------------------------------------------------------
+// ===========================================================================================================================================
+// ZONE DE TOUR ET COMBAT (CORRIGÉE)
+// ===========================================================================================================================================
 
-// -------------------------------------------------------- Tour & génération d'ennemis-------------------------------------------------------
-
+// Tour & génération d'ennemis
 function pickEnemySpecies(floor){
-  // Si l'étage est un multiple de 25, on choisit une espèce de boss.
-  if(floor > 0 && floor % 50 === 0){
-    return choice(BOSS_SPECIES);
-  }
+    if(floor > 0 && floor % 50 === 0){
+        return choice(BOSS_SPECIES);
+    }
 
-  // Sinon, la logique normale de sélection s'applique.
-  const roll = Math.random();
-  if(floor > 15 && roll < 0.15) return choice(SPECIES.epic);
-  if(floor > 5  && roll < 0.35) return choice(SPECIES.rare);
-  return choice(SPECIES.common);
+    const roll = Math.random();
+    if(floor > 15 && roll < 0.15) return choice(SPECIES.epic);
+    if(floor > 5  && roll < 0.35) return choice(SPECIES.rare);
+    return choice(SPECIES.common);
 }
-
 
 function scaleEnemyFromSpecies(species, floor){
-  const foe = createMonsterFromSpecies(species);
-  
-  // NOUVEAU : On ajoute une propriété "isBoss" pour savoir si c'est un boss
-  foe.isBoss = BOSS_SPECIES.some(boss => boss.name === foe.name);
-
-  // Calcule le niveau en fonction de l'étage, comme avant
-  foe.level = Math.max(1, Math.floor(floor / 2));
-  
-  // **CORRECTION : Simule la montée de niveau pour que les ennemis gagnent des stats comme le joueur.**
-  for (let i = 1; i < foe.level; i++) {
-    foe.statBonus.attack += Math.max(1, Math.floor(foe.baseStats.attack * 0.1));
-    foe.statBonus.defense += Math.max(1, Math.floor(foe.baseStats.defense * 0.1));
-    foe.statBonus.speed += 1;
-    foe.statBonus.hp += Math.max(1, Math.floor(foe.baseStats.hp * 0.15));
-  }
-  
-  // NOUVEAU : Bonus de stats pour les boss
-  if(foe.isBoss){
-    foe.statBonus.hp = Math.floor(foe.statBonus.hp * 1.2);
-    foe.statBonus.attack = Math.floor(foe.statBonus.attack * 1.2);
-    foe.statBonus.defense = Math.floor(foe.statBonus.defense * 1.2);
-    foe.statBonus.speed = Math.floor(foe.statBonus.speed * 1.1);
-  }
+    const foe = createMonsterFromSpecies(species);
+    
+    foe.isBoss = BOSS_SPECIES.some(boss => boss.name === foe.name);
+    foe.level = Math.max(1, Math.floor(floor / 2));
+    
+    // Simule la montée de niveau pour que les ennemis gagnent des stats comme le joueur
+    for (let i = 1; i < foe.level; i++) {
+        foe.statBonus.attack += Math.max(1, Math.floor(foe.baseStats.attack * 0.1));
+        foe.statBonus.defense += Math.max(1, Math.floor(foe.baseStats.defense * 0.1));
+        foe.statBonus.speed += 1;
+        foe.statBonus.hp += Math.max(1, Math.floor(foe.baseStats.hp * 0.15));
+    }
+    
+    // Bonus de stats pour les boss
+    if(foe.isBoss){
+        foe.statBonus.hp = Math.floor(foe.statBonus.hp * 1.2);
+        foe.statBonus.attack = Math.floor(foe.statBonus.attack * 1.2);
+        foe.statBonus.defense = Math.floor(foe.statBonus.defense * 1.2);
+        foe.statBonus.speed = Math.floor(foe.statBonus.speed * 1.1);
+    }
   
-  // Met à jour les stats finales avec la nouvelle fonction
-  const finalStats = getFinalStats(foe);
-  foe.hp = finalStats.hp;
-  foe.maxHp = finalStats.hp;
-  foe.attack = finalStats.attack;
-  foe.defense = finalStats.defense;
-  foe.speed = finalStats.speed;
+    // Utilise la fonction unifiée pour calculer les stats finales
+    const finalStats = getFinalStats(foe);
+    foe.hp = finalStats.hp;
 
-  return foe;
+    return foe;
 }
 
-// ---- ---------------------------------------------------Combat (tours + ATB bonus)---------------------------------------------------------
+// Combat (tours + ATB bonus)
 function startTowerRun(){
-  if(state.energy <= 0) return showModal('Énergie insuffisante','Vous n\'avez plus d\'énergie.');
-  const m = getActiveMonster(); if(!m) return showModal('Aucun monstre','Activez un monstre.');
-  
-  // NOUVELLE LIGNE : On initialise l'étage max si la propriété n'existe pas encore
-  if (m.maxFloor === undefined) {
-    m.maxFloor = 0;
-  }
-  
-  state.energy -= 1;
-  // CORRECTION : Utilise getFinalStats pour initialiser la vie du monstre.
-  // Cela garantit que tous les bonus d'objets sont inclus une seule fois, au début de la run.
-  m.hp = getFinalStats(m).hp;
-  state.currentFloor = 1;
-  runNextFloor(m);
+    if(state.energy <= 0) return showModal('Énergie insuffisante','Vous n\'avez plus d\'énergie.');
+    const m = getActiveMonster(); 
+    if(!m) return showModal('Aucun monstre','Activez un monstre.');
+    
+    if (m.maxFloor === undefined) {
+        m.maxFloor = 0;
+    }
+    
+    state.energy -= 1;
+    // Utilise la fonction unifiée pour initialiser la vie du monstre
+    const finalStats = getFinalStats(m);
+    m.hp = finalStats.hp;
+    state.currentFloor = 1;
+    runNextFloor(m);
 }
 
 function runNextFloor(monster){
-  const species = pickEnemySpecies(state.currentFloor);
-  const foe = scaleEnemyFromSpecies(species, state.currentFloor);
-  startBattle(monster, foe, (result, playerBattle, enemyBattle)=>{
-    monster.hp = playerBattle.hp;
+    const species = pickEnemySpecies(state.currentFloor);
+    const foe = scaleEnemyFromSpecies(species, state.currentFloor);
+    
+    startBattle(monster, foe, (result, playerBattle, enemyBattle)=>{
+        monster.hp = playerBattle.hp;
 
-    if(result === 'win'){
-      const rarityMult = foe.rarity==='epic' ? 2.0 : foe.rarity==='rare' ? 1.5 : 1.0;
-      const xpGain = (foe.level * 2) * rarityMult;
-      const goldGain = GOLD_PER_RARITY[foe.rarity];
+        if(result === 'win'){
+            const rarityMult = foe.rarity==='epic' ? 2.0 : foe.rarity==='rare' ? 1.5 : 1.0;
+            const xpGain = (foe.level * 2) * rarityMult;
+            const goldGain = GOLD_PER_RARITY[foe.rarity];
 
-      gainXp(monster, xpGain);
+            gainXp(monster, xpGain);
 
-      state.gold += goldGain;
-      // --- NOUVELLE LOGIQUE : Mettre à jour les objectifs
-      state.dailyObjectives.forEach(obj => {
-          if (obj.type === 'battles') {
-              obj.current += 1;
-          }
-          if (obj.type === 'floor' && state.currentFloor >= obj.value) {
-              obj.current = obj.value;
-          }
-      });
-      
-      // Ajoutez ici la logique pour incrémenter les victoires et vérifier l'évolution
-      // La fonction checkEvolution ne fera qu'ajouter la propriété `evolutionPending`
-      monster.victories = (monster.victories || 0) + 1;
-      checkEvolution(monster);
+            state.gold += goldGain;
+            
+            // Mise à jour des objectifs
+            state.dailyObjectives.forEach(obj => {
+                if (obj.type === 'battles') {
+                    obj.current += 1;
+                }
+                if (obj.type === 'floor' && state.currentFloor >= obj.value) {
+                    obj.current = obj.value;
+                }
+            });
+            
+            monster.victories = (monster.victories || 0) + 1;
+            checkEvolution(monster);
 
-      // --- NOUVELLE LOGIQUE : Mettre à jour l'étage max
-      if (state.currentFloor > monster.maxFloor) {
-          monster.maxFloor = state.currentFloor;
-      }
+            if (state.currentFloor > monster.maxFloor) {
+                monster.maxFloor = state.currentFloor;
+            }
 
-      if (state.currentFloor > 0 && state.currentFloor % 50 === 0) {
-        const dropChance = 20;
-        if (Math.random() * 100 < dropChance) {
-          const itemData = BOSS_LOOT_TABLE[Math.floor(Math.random() * BOSS_LOOT_TABLE.length)];
-          const newItemInstance = createItemInstance(itemData);
-          state.playerItems.push(newItemInstance);
-          showModal('Victoire !', `Vous avez vaincu le boss et avez obtenu un objet : ${newItemInstance.name} ! ${newItemInstance.description}.`);
+            // Loot de boss
+            if (state.currentFloor > 0 && state.currentFloor % 50 === 0) {
+                const dropChance = 20;
+                if (Math.random() * 100 < dropChance) {
+                    const itemData = BOSS_LOOT_TABLE[Math.floor(Math.random() * BOSS_LOOT_TABLE.length)];
+                    const newItemInstance = createItemInstance(itemData);
+                    state.playerItems.push(newItemInstance);
+                    showModal('Victoire !', `Vous avez vaincu le boss et avez obtenu un objet : ${newItemInstance.name} ! ${newItemInstance.description}.`);
+                } else {
+                    showModal('Victoire !', `Vous avez vaincu le boss, mais n'avez pas obtenu l'objet rare. Retentez votre chance !`);
+                }
+            }
+
+            state.currentFloor += 1;
+            renderMain();
+            runNextFloor(monster); 
+
         } else {
-          showModal('Victoire !', `Vous avez vaincu le boss, mais n'avez pas obtenu l'objet rare. Retentez votre chance !`);
+            // Gestion de la défaite
+            if (monster.evolutionPending) {
+                evolveMonster(monster, monster.evolvesTo);
+                return;
+            }
+
+            // Récupération complète des HP
+            const finalStats = getFinalStats(monster);
+            monster.hp = finalStats.hp;
+            state.currentFloor = 1;
+            document.getElementById('backToMain').disabled = false;
+            showModal('Fin de la run', `${monster.name} a été vaincu. Retour au menu.`);
+            showScreen('main');
         }
-      }
-
-      state.currentFloor += 1;
-      renderMain();
-      // Le combat suivant est lancé ici
-      runNextFloor(monster); 
-
-    } else { // Ceci est le bloc qui gère la défaite
-      // Vérifie si le monstre peut évoluer après une défaite
-      if (monster.evolutionPending) {
-          // Si les conditions sont réunies, on déclenche l'évolution et on ne fait rien d'autre
-          evolveMonster(monster, monster.evolvesTo);
-          return;
-      }
-
-      // Si pas d'évolution, le jeu se termine normalement
-      const bonusHp = monster.equippedItems.hp ? monster.equippedItems.hp.bonus : 0;
-      monster.hp = monster.maxHp + bonusHp;
-      state.currentFloor = 1;
-      document.getElementById('backToMain').disabled = false;
-      showModal('Fin de la run', `${monster.name} a été vaincu. Retour au menu.`);
-      showScreen('main');
-    }
-  });
+    });
 }
 
-// ---------------------------------------------------------- Combat en lui même---------------------------------------------------------------
-
+// Combat en lui même (CORRIGÉ)
 function startBattle(player, enemy, onEnd){
-  showScreen('battle');
-  document.getElementById('battle-floor').textContent = state.currentFloor;
-  const log = document.getElementById('battle-log');
-  const arena = document.getElementById('battle-monsters');
-  log.innerHTML = '';
-  document.getElementById('backToMain').disabled = true;
-  // reset ATB
-  state.battle.atb.player = 0;
-  state.battle.atb.enemy = 0;
-  // state.battle.speedIndex = 0; // <-- Cette ligne réinitialise la vitesse
-  updateSpeedBtn();
-
-  function renderBattle(){
-    // Utilisation de la nouvelle fonction pour obtenir les stats finales du joueur
-    const finalPlayerStats = getFinalStats(player);
-    const finalEnemyStats = getFinalStats(enemy); // J'ai ajouté ce calcul pour l'ennemi aussi
+    showScreen('battle');
+    document.getElementById('battle-floor').textContent = state.currentFloor;
+    const log = document.getElementById('battle-log');
+    const arena = document.getElementById('battle-monsters');
+    log.innerHTML = '';
+    document.getElementById('backToMain').disabled = true;
     
-    const pHP = clamp((player.hp/finalPlayerStats.hp)*100,0,100);
-    const eHP = clamp((enemy.hp/finalEnemyStats.hp)*100,0,100);
-    const pATB = clamp(state.battle.atb.player,0,ATB_FULL);
-    const eATB = clamp(state.battle.atb.enemy,0,ATB_FULL);
-    arena.innerHTML = `
-        <div class="card">
-            <img class="monster-img rarety-${player.rarity}" src="${player.image}" alt="${player.name}">
-            <h3>${player.name} <span class="badge ${player.rarity}">${player.rarity.toUpperCase()}</span></h3>
-            <div class="statline">Type ${player.type} — Nv ${player.level}</div>
-            <div class="bar hpbar"><div class="hpfill" style="width:${pHP}%"></div></div>
-            <div class="bar atbbar"><div class="atbfill" style="width:${(pATB/ATB_FULL)*100}%"></div></div>
-            <div class="statline">ATQ ${finalPlayerStats.attack} • DEF ${finalPlayerStats.defense} • VIT ${finalPlayerStats.speed} • PV ${player.hp}/${finalPlayerStats.hp}</div>
-        </div>
-        <div class="card">
-            <img class="monster-img rarety-${enemy.rarity}" src="${enemy.image}" alt="${enemy.name}">
-            <h3>${enemy.name} <span class="badge ${enemy.rarity}">${enemy.rarity.toUpperCase()}</span></h3>
-            <div class="statline">Type ${enemy.type} — Nv ${enemy.level}</div>
-            <div class="bar hpbar"><div class="hpfill" style="width:${eHP}%"></div></div>
-            <div class="bar atbbar"><div class="atbfill" style="width:${(eATB/ATB_FULL)*100}%"></div></div>
-            <div class="statline">ATQ ${finalEnemyStats.attack} • DEF ${finalEnemyStats.defense} • VIT ${finalEnemyStats.speed} • PV ${enemy.hp}/${finalEnemyStats.hp}</div>
-        </div>
-    `;
-  }
+    // reset ATB
+    state.battle.atb.player = 0;
+    state.battle.atb.enemy = 0;
+    updateSpeedBtn();
 
-
-  
-  function logLine(t){ log.innerHTML += `<div>• ${t}</div>`; log.scrollTop = log.scrollHeight; }
-
-  // Dégâts avec affinités
-  
-  function dealDamage(attacker, defender, source){
-      // Utilisation des statistiques finales pour le calcul des dégâts
-      const attackerFinalStats = getFinalStats(attacker);
-      const defenderFinalStats = getFinalStats(defender);
-
-      const base = Math.max(1, attackerFinalStats.attack - defenderFinalStats.defense);
-      const mult = typeMultiplier(attacker.type, defender.type);
-      const dmg = Math.max(1, Math.floor(base * mult));
-      
-      // Appliquer les dégâts
-      defender.hp -= dmg;
-      const tag = source==='ATB' ? ' (ATB !)' : '';
-      const aff = mult>1 ? ' [avantage]' : mult<1 ? ' [désavantage]' : '';
-      logLine(`${attacker.name} attaque ${defender.name}${tag} : -${dmg} PV${aff}`);
-  }
-
-  // Tours normaux (alternance) + ATB bonus en parallèle
-  state.battle.running = true;
-  renderBattle();
-
-  let battleOver = false;
-
-  function checkEnd(){
-    if(enemy.hp <= 0){
-      battleOver = true;
-      clearInterval(state.battle.intervalId);
-      state.battle.running = false;
-      logLine(`${enemy.name} est vaincu !`);
-      document.getElementById('backToMain').disabled = false;
-      onEnd('win', player, enemy);
-      return true;
+    function renderBattle(){
+        // Utilisation de la fonction unifiée pour obtenir les stats finales
+        const finalPlayerStats = getFinalStats(player);
+        const finalEnemyStats = getFinalStats(enemy);
+        
+        const pHP = clamp((player.hp/finalPlayerStats.hp)*100,0,100);
+        const eHP = clamp((enemy.hp/finalEnemyStats.hp)*100,0,100);
+        const pATB = clamp(state.battle.atb.player,0,ATB_FULL);
+        const eATB = clamp(state.battle.atb.enemy,0,ATB_FULL);
+        
+        arena.innerHTML = `
+            <div class="card">
+                <img class="monster-img rarety-${player.rarity}" src="${player.image}" alt="${player.name}">
+                <h3>${player.name} <span class="badge ${player.rarity}">${player.rarity.toUpperCase()}</span></h3>
+                <div class="statline">Type ${player.type} — Nv ${player.level}</div>
+                <div class="bar hpbar"><div class="hpfill" style="width:${pHP}%"></div></div>
+                <div class="bar atbbar"><div class="atbfill" style="width:${(pATB/ATB_FULL)*100}%"></div></div>
+                <div class="statline">ATQ ${finalPlayerStats.attack} • DEF ${finalPlayerStats.defense} • VIT ${finalPlayerStats.speed} • PV ${player.hp}/${finalPlayerStats.hp}</div>
+            </div>
+            <div class="card">
+                <img class="monster-img rarety-${enemy.rarity}" src="${enemy.image}" alt="${enemy.name}">
+                <h3>${enemy.name} <span class="badge ${enemy.rarity}">${enemy.rarity.toUpperCase()}</span></h3>
+                <div class="statline">Type ${enemy.type} — Nv ${enemy.level}</div>
+                <div class="bar hpbar"><div class="hpfill" style="width:${eHP}%"></div></div>
+                <div class="bar atbbar"><div class="atbfill" style="width:${(eATB/ATB_FULL)*100}%"></div></div>
+                <div class="statline">ATQ ${finalEnemyStats.attack} • DEF ${finalEnemyStats.defense} • VIT ${finalEnemyStats.speed} • PV ${enemy.hp}/${finalEnemyStats.hp}</div>
+            </div>
+        `;
     }
-    if(player.hp <= 0){
-      battleOver = true;
-      clearInterval(state.battle.intervalId);
-      state.battle.running = false;
-      logLine(`${player.name} est vaincu…`);
-      document.getElementById('backToMain').disabled = false;
-      onEnd('lose', player, enemy);
-      return true;
-    }
-    return false;
-  }
+  
+    function logLine(t){ log.innerHTML += `<div>• ${t}</div>`; log.scrollTop = log.scrollHeight; }
 
-  // Boucle de tours "classiques"
-  function doTurn(){
-    if(!state.battle.running) return;
-    if(battleOver) return;
-    // Joueur frappe
-    dealDamage(player, enemy, 'TURN');
+    // Dégâts avec affinités (CORRIGÉ)
+    function dealDamage(attacker, defender, source){
+        // Utilisation des statistiques finales pour le calcul des dégâts
+        const attackerFinalStats = getFinalStats(attacker);
+        const defenderFinalStats = getFinalStats(defender);
+
+        const base = Math.max(1, attackerFinalStats.attack - defenderFinalStats.defense);
+        const mult = typeMultiplier(attacker.type, defender.type);
+        const dmg = Math.max(1, Math.floor(base * mult));
+        
+        defender.hp -= dmg;
+        const tag = source==='ATB' ? ' (ATB !)' : '';
+        const aff = mult>1 ? ' [avantage]' : mult<1 ? ' [désavantage]' : '';
+        logLine(`${attacker.name} attaque ${defender.name}${tag} : -${dmg} PV${aff}`);
+    }
+
+    // Tours normaux (alternance) + ATB bonus en parallèle
+    state.battle.running = true;
     renderBattle();
-    if(checkEnd()) return;
-    // Ennemi riposte
-    setTimeout(()=>{
-      if(battleOver) return;
-      dealDamage(enemy, player, 'TURN');
-      renderBattle();
-      if(checkEnd()) return;
-      // Prochain tour après un délai dépendant de la vitesse (générale)
-      const spd = SPEED_STEPS[state.battle.speedIndex];
-      setTimeout(doTurn, 800 / spd);
-    }, 400 / SPEED_STEPS[state.battle.speedIndex]);
-  }
-  setTimeout(doTurn, 600 / SPEED_STEPS[state.battle.speedIndex]);
 
-  // ATB : tick parallèle qui peut déclencher des attaques bonus
-  state.battle.intervalId = setInterval(()=>{
-    if(!state.battle.running) return;
-    const spd = SPEED_STEPS[state.battle.speedIndex];
-    // Utilisation des statistiques finales pour le remplissage ATB
-    const finalPlayerStats = getFinalStats(player);
-    const finalEnemyStats = getFinalStats(enemy);
-    state.battle.atb.player += finalPlayerStats.speed * ATB_FILL_BASE * spd * 0.1;
-    state.battle.atb.enemy  += finalEnemyStats.speed  * ATB_FILL_BASE * spd * 0.1;
-    if(state.battle.atb.player >= ATB_FULL){
-      state.battle.atb.player -= ATB_FULL;
-      dealDamage(player, enemy, 'ATB');
-      renderBattle();
-      if(checkEnd()) return;
+    let battleOver = false;
+
+    function checkEnd(){
+        if(enemy.hp <= 0){
+            battleOver = true;
+            clearInterval(state.battle.intervalId);
+            state.battle.running = false;
+            logLine(`${enemy.name} est vaincu !`);
+            document.getElementById('backToMain').disabled = false;
+            onEnd('win', player, enemy);
+            return true;
+        }
+        if(player.hp <= 0){
+            battleOver = true;
+            clearInterval(state.battle.intervalId);
+            state.battle.running = false;
+            logLine(`${player.name} est vaincu…`);
+            document.getElementById('backToMain').disabled = false;
+            onEnd('lose', player, enemy);
+            return true;
+        }
+        return false;
     }
-    if(state.battle.atb.enemy >= ATB_FULL){
-      state.battle.atb.enemy -= ATB_FULL;
-      dealDamage(enemy, player, 'ATB');
-      renderBattle();
-      if(checkEnd()) return;
+
+    // Boucle de tours "classiques"
+    function doTurn(){
+        if(!state.battle.running) return;
+        if(battleOver) return;
+        
+        // Joueur frappe
+        dealDamage(player, enemy, 'TURN');
+        renderBattle();
+        if(checkEnd()) return;
+        
+        // Ennemi riposte
+        setTimeout(()=>{
+            if(battleOver) return;
+            dealDamage(enemy, player, 'TURN');
+            renderBattle();
+            if(checkEnd()) return;
+            
+            const spd = SPEED_STEPS[state.battle.speedIndex];
+            setTimeout(doTurn, 800 / spd);
+        }, 400 / SPEED_STEPS[state.battle.speedIndex]);
     }
-  }, ATB_TICK_MS / SPEED_STEPS[state.battle.speedIndex]);
+    setTimeout(doTurn, 600 / SPEED_STEPS[state.battle.speedIndex]);
+
+    // ATB : tick parallèle qui peut déclencher des attaques bonus
+    state.battle.intervalId = setInterval(()=>{
+        if(!state.battle.running) return;
+        const spd = SPEED_STEPS[state.battle.speedIndex];
+        
+        // Utilisation des statistiques finales pour le remplissage ATB
+        const finalPlayerStats = getFinalStats(player);
+        const finalEnemyStats = getFinalStats(enemy);
+        
+        state.battle.atb.player += finalPlayerStats.speed * ATB_FILL_BASE * spd * 0.1;
+        state.battle.atb.enemy  += finalEnemyStats.speed  * ATB_FILL_BASE * spd * 0.1;
+        
+        if(state.battle.atb.player >= ATB_FULL){
+            state.battle.atb.player -= ATB_FULL;
+            dealDamage(player, enemy, 'ATB');
+            renderBattle();
+            if(checkEnd()) return;
+        }
+        if(state.battle.atb.enemy >= ATB_FULL){
+            state.battle.atb.enemy -= ATB_FULL;
+            dealDamage(enemy, player, 'ATB');
+            renderBattle();
+            if(checkEnd()) return;
+        }
+    }, ATB_TICK_MS / SPEED_STEPS[state.battle.speedIndex]);
 }
 
-// -------------------------------Fonction appelée à la fin d'un combat (récupère le résultat 'win' ou 'lose')--------------------------------
-
-function onEnd(result) {
-    const activeMonster = getActiveMonster();
-
-    // Mettre à jour les HP du monstre du joueur avec les HP restants de la bataille
-    if (state.battle && state.battle.player && activeMonster) {
-        activeMonster.hp = state.battle.player.hp;
-    }
-    
-    // Si le joueur a perdu
-    if (result === 'lose') {
-        if (activeMonster.evolutionPending) {
-            evolveMonster(activeMonster, activeMonster.evolvesTo);
-            return;
-        }
-
-        const finalStats = getFinalStats(activeMonster);
-        activeMonster.hp = finalStats.hp;
-        activeMonster.maxHp = finalStats.hp;
-        
-        state.currentFloor = 1;
-        document.getElementById('backToMain').disabled = false;
-        showModal('Fin de la run', `${activeMonster.name} a été vaincu. Retour au menu.`);
-        showScreen('main');
-    }
-
-    // Si la bataille est gagnée
-    if (result === 'win') {
-        const xpGain = state.battle.enemy.xpValue;
-        activeMonster.xp += xpGain;
-        logLine(`${activeMonster.name} gagne ${xpGain} XP !`);
-        
-        // Logique de montée de niveau
-        if (activeMonster.xp >= activeMonster.xpNeeded) {
-            activeMonster.level++;
-            activeMonster.xp = 0;
-            activeMonster.xpNeeded = xpNeeded(activeMonster.level);
-            
-            // Met à jour les stats de base (sans bonus)
-            activeMonster.baseStats.hp += 2;
-            activeMonster.baseStats.attack += 1;
-            activeMonster.baseStats.defense += 1;
-            activeMonster.baseStats.speed += 1;
-
-            // CORRECTIF : Met à jour les PV actuels et les PV max avec les nouvelles stats de base
-            const newStats = getFinalStats(activeMonster);
-            activeMonster.hp = newStats.hp;
-            activeMonster.maxHp = newStats.hp;
-            
-            showModal('Montée de niveau !', `${activeMonster.name} a atteint le niveau ${activeMonster.level} !`);
-        }
-        
-        // Incrémente le compteur de victoires et vérifie les conditions d'évolution
-        activeMonster.victories = (activeMonster.victories || 0) + 1;
-        checkEvolution(activeMonster);
-    }
-    
-    // Nettoyer l'état de la bataille
-    state.battle.running = false;
-    
-    // Mettre à jour l'affichage
-    renderMain();
-    saveState();
-}
-
-// ---------------------------------------Appel du bouton et reglage du bouton VITESSE de combat-------------------------------------------------
-
+// Appel du bouton et réglage du bouton VITESSE de combat
 function toggleBattleSpeed(){
-  state.battle.speedIndex = (state.battle.speedIndex + 1) % SPEED_STEPS.length;
-  updateSpeedBtn();
+    state.battle.speedIndex = (state.battle.speedIndex + 1) % SPEED_STEPS.length;
+    updateSpeedBtn();
 }
+
 function updateSpeedBtn(){
-  const btn = document.getElementById('speedBtn');
-  if(btn) btn.textContent = `⚡ Vitesse x${SPEED_STEPS[state.battle.speedIndex]}`;
+    const btn = document.getElementById('speedBtn');
+    if(btn) btn.textContent = `⚡ Vitesse x${SPEED_STEPS[state.battle.speedIndex]}`;
 }
 
 // ===========================================================================================================================================
-// -------------------------------------------------------Systeme de recupération d'énergie----------------------------------------------------
+// Système de récupération d'énergie
+// ===========================================================================================================================================
 
-// ---- Énergie : régénération
 function startEnergyRegen(){
-  if(state.energyTimer) clearInterval(state.energyTimer);
-  state.energyTimer = setInterval(()=>{
-    if(state.energy < ENERGY_MAX){
-      state.energy += 1;
-      renderMain();
-    }
-  }, ENERGY_REGEN_MS);
+    if(state.energyTimer) clearInterval(state.energyTimer);
+    state.energyTimer = setInterval(()=>{
+        if(state.energy < ENERGY_MAX){
+            state.energy += 1;
+            renderMain();
+        }
+    }, ENERGY_REGEN_MS);
 }
 
-
-// ---------------------------------------------------------------- Vendre un monstre---------------------------------------------------------
-
+// Vendre un monstre
 function sellMonster(monsterId) {
-  // Trouver le monstre dans la collection
-  const monsterIndex = state.playerMonsters.findIndex(m => m.id === monsterId);
-  const monster = state.playerMonsters[monsterIndex];
+    const monsterIndex = state.playerMonsters.findIndex(m => m.id === monsterId);
+    const monster = state.playerMonsters[monsterIndex];
 
-  // Vérifier si le monstre existe et n'est pas le monstre actif
-  if (!monster || state.activeMonsterId === monster.id) {
-    showModal("Vous ne pouvez pas vendre votre monstre actif !");
-    return;
-  }
-  
-  const basePrice = getMonsterBasePrice(monster);
-  const sellPrice = Math.floor(basePrice * MONSTER_SELL_RATE);
-  
-  // Utiliser window.confirm() pour demander la confirmation
-  const confirmation = window.confirm(`Voulez-vous vraiment vendre ${monster.name} pour ${sellPrice} or ?`);
-  
-  // Si l'utilisateur clique sur "OK" (oui), continuer la vente
-  if (confirmation) {
-    // Ajouter l'or au joueur
-    state.gold += sellPrice;
-    
-    // Supprimer le monstre de la collection
-    state.playerMonsters.splice(monsterIndex, 1);
-    
-    // !-- Étape cruciale : Sauvegarder l'état après la modification !
-    saveState();
-
-    // Mettre à jour l'affichage
-    renderMain();
-    renderCollection(); 
-    
-    // Afficher un message de confirmation
-    showModal(`${monster.name} a été vendu pour ${sellPrice} or.`);
-  } 
-  // Si l'utilisateur clique sur "Annuler" (non), le code ne fait rien et le monstre reste.
-}
-
-// ----------------------------------------------Fonction utilitaire pour calculer le prix de base d'un monstre----------------------------------
-
-// Le prix augmente avec le nombre de monstres déjà obtenus.
-function getMonsterBasePrice(monster) {
-  const eggCost = getEggCost(); // On utilise la même fonction pour la vente
-  let rarityMultiplier = 1;
-  switch (monster.rarity) {
-    case 'common': rarityMultiplier = 0.25; break;
-    case 'rare': rarityMultiplier = 0.5; break;
-    case 'epic': rarityMultiplier = 1.2; break;
-    default: rarityMultiplier = 0.25;
-  }
-  return Math.floor(eggCost * rarityMultiplier);
-}
-
-//----------------------------- CODE SERVANT A LA MISE EN PLACE DU TRI DES PETIS MONSTRES DANS LA COLLECTION------------------------------------
-
-function sortMonsters(criteria) {
-  state.playerMonsters.sort((a, b) => {
-    switch (criteria) {
-      case 'level':
-        // Trie du niveau le plus haut au plus bas
-        return b.level - a.level;
-      case 'rarity':
-        // Trie par rareté (Épique > Rare > Commun)
-        const rarityOrder = { epic: 3, rare: 2, common: 1 };
-        return rarityOrder[b.rarity] - rarityOrder[a.rarity];
-      case 'type':
-        // Trie par type (ordre alphabétique)
-        if (a.type < b.type) return -1;
-        if (a.type > b.type) return 1;
-        return 0;
-      case 'name':
-        // Trie par nom (ordre alphabétique)
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      default:
-        // Trie par défaut par niveau si le critère est inconnu
-        return b.level - a.level;
+    if (!monster || state.activeMonsterId === monster.id) {
+        showModal("Impossible", "Vous ne pouvez pas vendre votre monstre actif !");
+        return;
     }
-  });
-  renderCollection();
+    
+    const basePrice = getMonsterBasePrice(monster);
+    const sellPrice = Math.floor(basePrice * MONSTER_SELL_RATE);
+    
+    const confirmation = window.confirm(`Voulez-vous vraiment vendre ${monster.name} pour ${sellPrice} or ?`);
+    
+    if (confirmation) {
+        state.gold += sellPrice;
+        state.playerMonsters.splice(monsterIndex, 1);
+        saveState(1);
+
+        renderMain();
+        renderCollection(); 
+        showModal('Monstre vendu', `${monster.name} a été vendu pour ${sellPrice} or.`);
+    }
 }
-// 
-// 
-// ----------------------------------------------------------PROCESSUS D EVOLUTION------------------- ----------------------------------------
+
+// Fonction utilitaire pour calculer le prix de base d'un monstre
+function getMonsterBasePrice(monster) {
+    const eggCost = getEggCost();
+    let rarityMultiplier = 1;
+    switch (monster.rarity) {
+        case 'common': rarityMultiplier = 0.25; break;
+        case 'rare': rarityMultiplier = 0.5; break;
+        case 'epic': rarityMultiplier = 1.2; break;
+        default: rarityMultiplier = 0.25;
+    }
+    return Math.floor(eggCost * rarityMultiplier);
+}
+
+// CODE SERVANT A LA MISE EN PLACE DU TRI DES PETITS MONSTRES DANS LA COLLECTION
+function sortMonsters(criteria) {
+    state.playerMonsters.sort((a, b) => {
+        switch (criteria) {
+            case 'level':
+                return b.level - a.level;
+            case 'rarity':
+                const rarityOrder = { epic: 3, rare: 2, common: 1 };
+                return rarityOrder[b.rarity] - rarityOrder[a.rarity];
+            case 'type':
+                if (a.type < b.type) return -1;
+                if (a.type > b.type) return 1;
+                return 0;
+            case 'name':
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            default:
+                return b.level - a.level;
+        }
+    });
+    renderCollection();
+}
+
+// ===========================================================================================================================================
+// PROCESSUS D'ÉVOLUTION (CORRIGÉ)
+// ===========================================================================================================================================
 
 // Trouve les données d'une espèce de monstre par son ID
 function getSpeciesDataById(speciesId) {
-    // Recherche dans la base de données des espèces évoluées en premier
     if (EVOLVED_SPECIES[speciesId]) {
         return EVOLVED_SPECIES[speciesId];
     }
-    // Si l'espèce n'est pas évoluée, on la cherche dans les listes de SPECIES
+    
     for (const rarity in SPECIES) {
         const found = SPECIES[rarity].find(s => s.id === speciesId);
         if (found) {
             return found;
         }
     }
-    return null; // Retourne null si aucune espèce n'est trouvée
+    return null;
 }
 
 // Vérifie si le monstre peut évoluer
@@ -1426,25 +1335,14 @@ function checkEvolution(monster) {
         allConditionsMet = false;
     }
     
-    // Si toutes les conditions sont remplies, on marque l'évolution comme en attente
     if (allConditionsMet) {
         monster.evolutionPending = true;
         monster.evolvesTo = evolutionInfo.evolvesTo;
     }
 }
 
-// Effectue le processus d'évolution
+// Effectue le processus d'évolution (CORRIGÉ)
 function evolveMonster(monster, newSpeciesId) {
-    const oldBaseStatsPlusBonus = {
-        hp: monster.baseStats.hp + monster.statBonus.hp,
-        attack: monster.baseStats.attack + monster.statBonus.attack,
-        defense: monster.baseStats.defense + monster.statBonus.defense,
-        speed: monster.baseStats.speed + monster.statBonus.speed
-    };
-    
-    // On garde le ratio de vie de l'ancien monstre sans les objets
-    const oldHpRatio = monster.hp / oldBaseStatsPlusBonus.hp;
-
     const newSpeciesData = getSpeciesDataById(newSpeciesId);
 
     if (!newSpeciesData) {
@@ -1458,7 +1356,6 @@ function evolveMonster(monster, newSpeciesId) {
 
     const evolutionImage = document.getElementById('evolution-monster-image');
     evolutionImage.src = monster.image;
-
     evolutionImage.classList.add('evolve-animation');
 
     setTimeout(() => {
@@ -1475,14 +1372,9 @@ function evolveMonster(monster, newSpeciesId) {
         monster.baseStats.speed = newSpeciesData.speed;
         monster.baseStats.hp = newSpeciesData.hp;
 
-        // **CORRECTION : Met à jour la propriété maxHp**
-        monster.maxHp = newSpeciesData.hp + monster.statBonus.hp;
-        
-        // Récupère les stats finales (base + bonus permanents)
-        const newFinalStats = getFinalStats(monster);
-        
-        // La solution : met la vie au maximum
-        monster.hp = newFinalStats.hp;
+        // Récupération complète des HP avec les nouvelles stats
+        const finalStats = getFinalStats(monster);
+        monster.hp = finalStats.hp;
 
         monster.victories = 0;
 
@@ -1496,7 +1388,7 @@ function evolveMonster(monster, newSpeciesId) {
             renderMain();
         };
 
-        saveState();
+        saveState(1);
         renderMain();
     }, 4000); 
 }
@@ -1506,45 +1398,38 @@ function createId() {
     return 'id-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 }
 
-
-
-// ------------------------------------- --------------------OBJECTIFS JOURNALIERS----------------------------------------------------------
+// ===========================================================================================================================================
+// OBJECTIFS JOURNALIERS
+// ===========================================================================================================================================
 
 // Fonction pour choisir aléatoirement des objectifs uniques
 function generateDailyObjectives() {
-    const objectivesToGenerate = 3; // On peut en générer 3 par jour
+    const objectivesToGenerate = 3;
     const selectedObjectives = [];
-    const availableObjectives = [...DAILY_OBJECTIVES]; // Copie pour éviter de modifier l'original
+    const availableObjectives = [...DAILY_OBJECTIVES];
 
     for (let i = 0; i < objectivesToGenerate; i++) {
         if (availableObjectives.length === 0) break;
         const randomIndex = Math.floor(Math.random() * availableObjectives.length);
         const objective = availableObjectives.splice(randomIndex, 1)[0];
-        
-        // On s'assure que l'objectif n'est pas déjà dans la liste
         selectedObjectives.push(objective);
     }
     
-    // On copie la structure de l'objectif pour ne pas modifier l'original
     state.dailyObjectives = selectedObjectives.map(obj => ({
         ...obj,
-        current: 0 // Le progrès de l'objectif est à 0 au début de la journée
+        current: 0
     }));
     
-    // On met à jour l'horodatage
     state.lastObjectiveReset = new Date().toDateString();
-    
-    // On sauvegarde l'état du jeu pour que les objectifs soient conservés
-    saveState();
+    saveState(1);
 }
 
-
-// -------------------------------------------------Affiche l'écran des objectifs quotidiens-------------------------------------------------
+// Affiche l'écran des objectifs quotidiens
 function renderObjectives() {
     let html = '<h2>Objectifs du jour</h2>';
     state.dailyObjectives.forEach(obj => {
         const isCompleted = obj.current >= obj.value;
-        const progress = isCompleted ? 'Completé !' : `${obj.current}/${obj.value}`;
+        const progress = isCompleted ? 'Complété !' : `${obj.current}/${obj.value}`;
         const buttonText = isCompleted ? 'Réclamer' : 'En cours...';
         const buttonDisabled = isCompleted ? '' : 'disabled';
 
@@ -1561,7 +1446,6 @@ function renderObjectives() {
         `;
     });
     
-    // Ajoutez le bouton de retour à la fin du code HTML généré
     html += `<button class="btn" onclick="showScreen('main')">Retour</button>`;
 
     document.getElementById('objectives-screen').innerHTML = html;
@@ -1571,28 +1455,385 @@ function renderObjectives() {
 function claimObjective(id) {
     const obj = state.dailyObjectives.find(o => o.id === id);
     if (!obj || obj.current < obj.value) {
-        return; // L'objectif n'est pas encore complété
+        return;
     }
     
     state.gold += obj.reward;
     showModal('Récompense !', `Vous avez gagné ${obj.reward} or pour avoir complété l'objectif !`);
     
-    // On retire l'objectif du tableau pour qu'il ne puisse pas être réclamé de nouveau
     state.dailyObjectives = state.dailyObjectives.filter(o => o.id !== id);
     
-    saveState();
+    saveState(1);
     renderObjectives();
 }
 
-// --------------------------------------------------INITIALISATION DU JEU-------------------------------------------------------------------------------
+// ===========================================================================================================================================
+// --------------------------------------------------------PRINCIPE D'UTILISATION D'UN OBJET----------------------------------------------------------
+// ===========================================================================================================================================
 
-// Fonction d'initialisation du jeu
+// Fonction pour utiliser un objet
+function useItem(uniqueId) {
+    const itemIndex = state.playerItems.findIndex(i => i.uniqueId === uniqueId);
+    if (itemIndex === -1) {
+        console.error('Erreur: L\'objet n\'existe pas dans l\'inventaire.');
+        showModal('Erreur', 'Cet objet n\'existe plus dans votre inventaire.');
+        return;
+    }
+    
+    const item = state.playerItems[itemIndex];
+    const activeMonster = getActiveMonster();
+    
+    // Gestion des différents types d'objets consommables
+    switch (item.type) {
+        case 'xp':
+            if (!activeMonster) {
+                showModal('Erreur', 'Vous devez avoir un monstre actif pour utiliser cet objet.');
+                return;
+            }
+            gainXp(activeMonster, item.bonus);
+            state.playerItems.splice(itemIndex, 1);
+            showModal('Objet utilisé', `Vous avez utilisé un ${item.name} ! ${activeMonster.name} a gagné ${item.bonus} XP.`);
+            break;
+            
+        case 'energy':
+            const energyGained = Math.min(item.bonus, ENERGY_MAX - state.energy);
+            state.energy += energyGained;
+            state.playerItems.splice(itemIndex, 1);
+            showModal('Objet utilisé', `Vous avez utilisé un ${item.name} ! Vous avez récupéré ${energyGained} énergie.`);
+            break;
+            
+        default:
+            showModal('Erreur', 'Cet objet ne peut pas être utilisé directement. Essayez de l\'équiper.');
+            return;
+    }
+    
+    saveState(1);
+    renderMain();
+    renderInventory();
+}
+
+// ==============================================================================================================================================
+// ----------------------------------------------------- JEUX DE CHANCE JOURNALIER----------------------------------------------------------
+// ==========================================================================================================================================
+
+const REWARD_PROBABILITIES = {
+    gold200: 0.30,  // 5% de chance de gagner 200 or
+    gold500: 0.20,  // 10% de chance de gagner 500 or
+    gold1000: 0.05, // 10% de chance de gagner 1000 or
+    xp_boost_200: 0.15, // 5% de chance de gagner un jeton de 200 xp
+    xp_boost_500: 0.10, // 10% de chance de gagner un jeton de 500 xp
+    energyboost10: 0.15, // 5% de chance de gagner un jeton d'énergie
+    mysteryEgg: 0.05  // 55% de chance de gagner un œuf mystère
+};
+
+const REWARD_IMAGES = {
+    gold200: 'image/items/gold200.png',
+    gold500: 'image/items/gold500.png',
+    gold1000: 'image/items/gold1000.png',
+    xp_boost_200: 'image/items/xp200.png',
+    xp_boost_500: 'image/items/xp500.png',
+    energyboost10: 'image/items/energy10.png',
+    mysteryEgg: 'image/oeuf-mystere.png' // Corrigé pour correspondre à ton code précédent
+};
+
+const REWARD_NAMES = {
+    gold200: '200 Or',
+    gold500: '500 Or',
+    gold1000: '1000 Or',
+    xp_boost_200: '1 Jeton XP (200)',
+    xp_boost_500: '1 Jeton XP (500)',
+    energyboost10: '1 Jeton Énergie',
+    mysteryEgg: 'Un œuf mystère'
+};
+
+// --- FONCTIONS POUR LA MACHINE A SOUS À UNE ROUE ---
+
+// Initialise la roue avec des symboles
+function initSlotsScreen() {
+    const reel = document.getElementById('slots-reel');
+    const rewards = Object.keys(REWARD_IMAGES);
+    reel.innerHTML = ''; // Nettoie le contenu précédent
+    
+    // Crée un conteneur interne pour les symboles
+    const reelContent = document.createElement('div');
+    reelContent.className = 'reel-content';
+    
+    // CORRECTION 5: Crée une distribution équilibrée des symboles
+    const symbolCount = 60;
+    const symbolsPerReward = Math.floor(symbolCount / rewards.length);
+    const symbolOrder = [];
+    
+    // Ajoute chaque récompense plusieurs fois pour une meilleure distribution
+    for (let i = 0; i < symbolCount; i++) {
+        const rewardIndex = i % rewards.length;
+        const reward = rewards[rewardIndex];
+        symbolOrder.push(reward);
+    }
+    
+    // Mélange l'ordre pour plus de variété
+    for (let i = symbolOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [symbolOrder[i], symbolOrder[j]] = [symbolOrder[j], symbolOrder[i]];
+    }
+    
+    // Crée les éléments DOM pour chaque symbole
+    symbolOrder.forEach((reward, index) => {
+        const symbolDiv = document.createElement('div');
+        symbolDiv.className = 'slot-symbol';
+        symbolDiv.dataset.reward = reward;
+        
+        // Vérifie si l'image existe
+        if (!REWARD_IMAGES[reward]) {
+            console.error(`Image manquante pour la récompense: ${reward}`);
+            symbolDiv.innerHTML = `<span>Erreur: ${reward}</span>`;
+        } else {
+            symbolDiv.innerHTML = `<img src="${REWARD_IMAGES[reward]}" alt="${reward}" class="slot-image" onerror="console.error('Erreur de chargement de l\'image: ${REWARD_IMAGES[reward]}')">`;
+        }
+        
+        reelContent.appendChild(symbolDiv);
+    });
+    
+    console.log('Ordre des symboles générés:', symbolOrder);
+    
+    reel.appendChild(reelContent);
+
+    // Réinitialise la position du contenu
+    reelContent.style.transition = 'none';
+    reelContent.style.transform = 'translateY(0)';
+
+    // Désactiver le bouton si la roulette a déjà été utilisée aujourd'hui
+    const spinButton = document.getElementById('spin-button');
+    const today = new Date().toDateString();
+    if (state.lastSlotsSpin === today) {
+        spinButton.disabled = true;
+        spinButton.textContent = 'Déjà utilisé aujourd\'hui';
+    } else {
+        spinButton.disabled = false;
+        spinButton.textContent = 'Tenter ma chance !';
+    }
+}
+
+// Donne la récompense au joueur
+function giveReward(rewardType) {
+    let message = `Vous avez gagné ${REWARD_NAMES[rewardType]} !`;
+
+    switch (rewardType) {
+        case 'gold200':
+            state.gold += 200;
+            break;
+        case 'gold500':
+            state.gold += 500;
+            break;
+        case 'gold1000':
+            state.gold += 1000;
+            break;
+        case 'xp_boost_200':
+        case 'xp_boost_500':
+        case 'energyboost10':
+            // Trouve l'objet correspondant dans ITEMS
+            const itemData = ITEMS.find(item => item.id === rewardType);
+            if (!itemData) {
+                console.error(`Erreur: Item ${rewardType} non trouvé dans ITEMS.`);
+                showModal('Erreur', 'Une erreur est survenue lors de la récompense.');
+                return;
+            }
+            // Crée une instance complète avec uniqueId
+            const newItem = {
+                ...itemData,
+                uniqueId: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+            };
+            state.playerItems.push(newItem);
+            message = `Vous avez gagné ${itemData.name} !`;
+            break;
+        case 'mysteryEgg':
+            // Logic pour faire éclore l'œuf mystère
+            const roll = Math.random();
+            let selectedRarity = '';
+            
+            if (roll < EGG_PROBABILITIES.epic) {
+                selectedRarity = 'epic';
+            } else if (roll < EGG_PROBABILITIES.epic + EGG_PROBABILITIES.rare) {
+                selectedRarity = 'rare';
+            } else {
+                selectedRarity = 'common';
+            }
+
+            const randomSpecies = choice(SPECIES[selectedRarity]);
+            const newMonster = createMonsterFromSpecies(randomSpecies);
+            
+            state.playerMonsters.push(newMonster);
+            
+            // Met à jour les objectifs quotidiens
+            state.dailyObjectives.forEach(obj => {
+                if (obj.type === 'capture') {
+                    obj.current += 1;
+                }
+            });
+
+            message = `L'œuf a éclos ! Vous avez obtenu un ${newMonster.rarity} ${newMonster.name} !`;
+            break;
+    }
+    
+    showModal('Jackpot !', message);
+    saveState(1);
+    renderMain();
+}
+
+// Lance l'animation et donne la récompense
+function spinSlots() {
+    const spinButton = document.getElementById('spin-button');
+    const reel = document.getElementById('slots-reel');
+    const reelContent = reel.querySelector('.reel-content');
+    const rewards = Object.keys(REWARD_IMAGES);
+    const today = new Date().toDateString();
+
+    // Vérifie si la roulette a déjà été utilisée aujourd'hui
+    if (state.lastSlotsSpin === today) {
+        showModal('Limite atteinte', 'Vous avez déjà utilisé la roulette aujourd\'hui. Revenez demain !');
+        return;
+    }
+
+    // NOUVEAUTÉ : Sons de la machine à sous
+    const spinSound = new Audio('sounds/machine-a-sous-en-mouvement.mp3');
+    const victorySound = new Audio('sounds/machine-a-sous-victoire.mp3');
+    
+    // Configure le son de rotation (en boucle)
+    spinSound.loop = true;
+    spinSound.volume = 0.6; // Volume ajustable
+    
+    // Configure le son de victoire
+    victorySound.volume = 0.8;
+
+    // Désactive le bouton pendant l'animation
+    spinButton.disabled = true;
+    spinButton.textContent = 'En cours...';
+
+    // NOUVEAUTÉ : Lance le son de rotation
+    spinSound.play().catch(e => console.log('Erreur son rotation:', e));
+
+    // Ajoute une classe pour l'effet visuel de rotation
+    reelContent.classList.add('spinning');
+
+    // Sélectionne la récompense finale
+    const result = choiceWithProbabilities(REWARD_PROBABILITIES);
+    
+    // Trouve l'index du résultat dans la liste des symboles générés
+    const symbols = reelContent.querySelectorAll('.slot-symbol');
+    const totalSymbols = symbols.length;
+    
+    console.log(`Total de symboles disponibles: ${totalSymbols}`);
+    
+    // Cherche un symbole correspondant dans la moitié supérieure pour éviter les problèmes
+    let winningIndex = -1;
+    const startSearch = Math.floor(totalSymbols * 0.3); // Commence à 30% de la liste
+    const endSearch = Math.floor(totalSymbols * 0.7);   // Finit à 70% de la liste
+    
+    for (let i = startSearch; i < endSearch; i++) {
+        if (symbols[i] && symbols[i].dataset.reward === result) {
+            winningIndex = i;
+            break;
+        }
+    }
+    
+    // Si on ne trouve pas le symbole, on en modifie un existant
+    if (winningIndex === -1) {
+        winningIndex = startSearch + Math.floor(Math.random() * (endSearch - startSearch));
+        if (symbols[winningIndex]) {
+            symbols[winningIndex].dataset.reward = result;
+            const imgElement = symbols[winningIndex].querySelector('img');
+            if (imgElement && REWARD_IMAGES[result]) {
+                imgElement.src = REWARD_IMAGES[result];
+                imgElement.alt = result;
+            }
+        }
+    }
+
+    console.log(`Récompense sélectionnée: ${result}, Index: ${winningIndex}/${totalSymbols}`);
+
+    // Calcule l'animation avec les nouvelles dimensions
+    const symbolHeight = 50; // Doit correspondre à la hauteur forcée dans initSlotsScreen
+    const containerHeight = 150;
+    const centerOffset = (containerHeight / 2) - (symbolHeight / 2);
+    
+    // Nombre de tours complets (modéré car on a plus de symboles maintenant)
+    const fullRotations = Math.floor(Math.random() * 3) + 3; // 3 à 5 tours
+    
+    // Distance pour les tours complets
+    const fullRotationDistance = fullRotations * containerHeight;
+    
+    // Position finale pour centrer le symbole gagnant
+    const finalPosition = -(winningIndex * symbolHeight) + centerOffset;
+    
+    // Distance totale avec une marge de sécurité
+    const totalTranslateY = -(fullRotationDistance + Math.abs(finalPosition));
+
+    console.log(`Animation: ${fullRotations} tours, distance totale: ${totalTranslateY}px, position finale: ${finalPosition}px`);
+
+    // PHASE 1 : Animation rapide (2.5 secondes)
+    reelContent.style.transition = 'transform 2.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    reelContent.style.transform = `translateY(${totalTranslateY}px)`;
+
+    // PHASE 2 : Ralentissement vers la position finale (1.5 secondes)
+    setTimeout(() => {
+        reelContent.style.transition = 'transform 1.5s cubic-bezier(0.23, 1, 0.320, 1)';
+        reelContent.style.transform = `translateY(${finalPosition}px)`;
+    }, 2500);
+
+    // Attend la fin de l'animation complète pour donner la récompense
+    setTimeout(() => {
+        // NOUVEAUTÉ : Arrête le son de rotation
+        spinSound.pause();
+        spinSound.currentTime = 0; // Remet le son au début
+        
+        // NOUVEAUTÉ : Lance le son de victoire
+        victorySound.play().catch(e => console.log('Erreur son victoire:', e));
+        
+        giveReward(result);
+        // Met à jour la date de la dernière rotation
+        state.lastSlotsSpin = today;
+        spinButton.disabled = true;
+        spinButton.textContent = 'Déjà utilisé aujourd\'hui';
+        // Sauvegarde l'état
+        saveState(1);
+        // Garde la position finale pour afficher le symbole gagnant
+        reelContent.classList.remove('spinning');
+        
+        // Met en surbrillance uniquement le symbole gagnant
+        symbols.forEach((symbol, index) => {
+            if (index === winningIndex) {
+                symbol.classList.add('winning-symbol');
+                console.log(`Symbole gagnant affiché: ${symbol.dataset.reward} à l'index ${index}`);
+            } else {
+                symbol.classList.remove('winning-symbol');
+            }
+        });
+    }, 4000); // 2.5s + 1.5s = 4s au total
+}
+
+// Fonction utilitaire pour choisir un élément en fonction des probabilités
+function choiceWithProbabilities(probs) {
+    const rand = Math.random();
+    let cumulative = 0;
+    for (const item in probs) {
+        cumulative += probs[item];
+        if (rand < cumulative) {
+            return item;
+        }
+    }
+}
+
+document.getElementById('spin-button').addEventListener('click', spinSlots);
+
+
+// =============================================================================================================================================
+// INITIALISATION DU JEU
+// ===========================================================================================================================================
+
 function init() {
     const hasSavedGame = localStorage.getItem('monsterBreederState_slot1') !== null;
 
     if (hasSavedGame) {
         loadState(1); 
-        // Réinitialise les objectifs si une nouvelle journée a commencé
         if (state.lastObjectiveReset !== new Date().toDateString()) {
             generateDailyObjectives();
         }
@@ -1601,7 +1842,6 @@ function init() {
         startNewGame();
     }
 
-    // Affiche l'écran principal ou l'écran de départ si c'est une nouvelle partie
     if (state.playerMonsters && state.playerMonsters.length > 0) {
         showScreen('main');
     } else {
@@ -1609,155 +1849,145 @@ function init() {
     }
 }
 
-
-
-// ---- Initialisation : donner 1 monstre commun gratuit si vide
 function bootstrap() {
-  // On lance la boucle de mise à jour de l'énergie
-  startEnergyRegen();
-
-  // On affiche l'écran d'accueil
-  showScreen('home');
-  
-  // On vérifie s'il y a une sauvegarde pour afficher le bouton 'Continuer'
-  checkSavedGameAndShowButton();
+    startEnergyRegen();
+    showScreen('home');
+    checkSavedGameAndShowButton();
 }
 
-// =============================================== PARTIE SAUVEGARDE ET CHARGEMENT=========================================================
+// ===========================================================================================================================================
+// PARTIE SAUVEGARDE ET CHARGEMENT
+// ===========================================================================================================================================
 
 function checkSavedGameAndShowButton() {
-  const hasSavedGame = localStorage.getItem('monsterBreederState_slot1') !== null ||
-                       localStorage.getItem('monsterBreederState_slot2') !== null ||
-                       localStorage.getItem('monsterBreederState_slot3') !== null;
-  if (hasSavedGame) {
-    document.getElementById('continue-button').style.display = 'block';
-  }
+    const hasSavedGame = localStorage.getItem('monsterBreederState_slot1') !== null ||
+                         localStorage.getItem('monsterBreederState_slot2') !== null ||
+                         localStorage.getItem('monsterBreederState_slot3') !== null;
+    if (hasSavedGame) {
+        document.getElementById('continue-button').style.display = 'block';
+    }
 }
 
 // Navigation par défaut vers l'accueil
 window.addEventListener('load', ()=>{
-  showScreen('home');
-  bootstrap();
+    showScreen('home');
+    bootstrap();
 });
 
 // Fonction pour sauvegarder l'état du jeu dans un emplacement spécifique
-function saveState(slotId) {
-  localStorage.setItem(`monsterBreederState_slot${slotId}`, JSON.stringify(state));
+function saveState(slotId = 1) {
+    localStorage.setItem(`monsterBreederState_slot${slotId}`, JSON.stringify(state));
 }
 
 // Fonction pour charger l'état du jeu à partir d'un emplacement spécifique
 function loadState(slotId) {
-  const savedState = localStorage.getItem(`monsterBreederState_slot${slotId}`);
-  if (savedState) {
-    state = JSON.parse(savedState);
-    if (!state.dailyObjectives) {
-        state.dailyObjectives = [];
+    const savedState = localStorage.getItem(`monsterBreederState_slot${slotId}`);
+    if (savedState) {
+        state = JSON.parse(savedState);
+        if (!state.dailyObjectives) {
+            state.dailyObjectives = [];
+        }
+        showModal('Partie chargée', `La sauvegarde ${slotId} a été chargée avec succès !`);
+    } else {
+        showModal('Aucune sauvegarde', `Il n'y a pas de sauvegarde dans l'emplacement ${slotId}.`);
     }
-    showModal('Partie chargée', `La sauvegarde ${slotId} a été chargée avec succès !`);
-  } else {
-    showModal('Aucune sauvegarde', `Il n'y a pas de sauvegarde dans l'emplacement ${slotId}.`);
-  }
 }
 
 // Nouvelle fonction pour réinitialiser un emplacement de sauvegarde
 function resetState(slotId) {
-  localStorage.removeItem(`monsterBreederState_slot${slotId}`);
-  showModal('Sauvegarde effacée', `L'emplacement ${slotId} a été effacé.`);
+    localStorage.removeItem(`monsterBreederState_slot${slotId}`);
+    showModal('Sauvegarde effacée', `L'emplacement ${slotId} a été effacé.`);
 }
 
 // Affiche une pop-up pour choisir un emplacement de sauvegarde/chargement
 function showSaveLoadModal() {
-  const modalContent = document.getElementById('modal-content');
-  
-  // Crée les boutons pour chaque emplacement de sauvegarde
-  const buttonsHtml = [1, 2, 3].map(slot => {
-    const saved = localStorage.getItem(`monsterBreederState_slot${slot}`);
-    const isSaved = saved !== null;
-    const saveLoadText = isSaved ? 'Charger' : 'Nouvelle Partie';
-    const resetButton = isSaved ? `<button class="btn-mini" onclick="resetAndReload(${slot})">✖️</button>` : '';
+    const modalContent = document.getElementById('modal-content');
+    
+    const buttonsHtml = [1, 2, 3].map(slot => {
+        const saved = localStorage.getItem(`monsterBreederState_slot${slot}`);
+        const isSaved = saved !== null;
+        const saveLoadText = isSaved ? 'Charger' : 'Nouvelle Partie';
+        const resetButton = isSaved ? `<button class="btn-mini" onclick="resetAndReload(${slot})">✖️</button>` : '';
 
-    return `
-      <div class="slot-container">
-        <h3>Emplacement ${slot}</h3>
-        <button class="btn" onclick="saveGame(${slot})">💾 Sauvegarder</button>
-        <button class="btn" onclick="loadGame(${slot})">${saveLoadText}</button>
-        ${resetButton}
-      </div>
+        return `
+            <div class="slot-container">
+                <h3>Emplacement ${slot}</h3>
+                <button class="btn" onclick="saveGame(${slot})">💾 Sauvegarder</button>
+                <button class="btn" onclick="loadGame(${slot})">${saveLoadText}</button>
+                ${resetButton}
+            </div>
+        `;
+    }).join('');
+
+    modalContent.innerHTML = `
+        <h2>Sauvegarder / Charger</h2>
+        ${buttonsHtml}
+        <button class="btn" onclick="closeModal()">Fermer</button>
     `;
-  }).join('');
 
-  modalContent.innerHTML = `
-    <h2>Sauvegarder / Charger</h2>
-    ${buttonsHtml}
-    <button class="btn" onclick="closeModal()">Fermer</button>
-  `;
-
-  document.getElementById('modal').classList.remove('hidden');
+    document.getElementById('modal').classList.remove('hidden');
 }
 
 // Fonctions pour gérer les actions des boutons
 function saveGame(slot) {
-  saveState(slot);
-  showModal('Partie sauvegardée', `Votre partie a été sauvegardée dans l'emplacement ${slot}.`);
+    saveState(slot);
+    showModal('Partie sauvegardée', `Votre partie a été sauvegardée dans l'emplacement ${slot}.`);
 }
 
 function loadGame(slot) {
-  closeModal(); // Ferme la modale avant de charger
-  loadState(slot);
-  if (state.lastObjectiveReset !== new Date().toDateString()) {
-    generateDailyObjectives();
-    showModal('Nouveaux objectifs !', 'De nouveaux objectifs quotidiens sont disponibles !');
-  }
-  showScreen('main'); // Va sur l'écran principal après le chargement
-  toggleMusic();
-  document.getElementById('game-music').volume = 0.5;
+    closeModal();
+    loadState(slot);
+    if (state.lastObjectiveReset !== new Date().toDateString()) {
+        generateDailyObjectives();
+        showModal('Nouveaux objectifs !', 'De nouveaux objectifs quotidiens sont disponibles !');
+    }
+    showScreen('main');
+    toggleMusic();
+    document.getElementById('game-music').volume = 0.5;
 }
 
 function resetAndReload(slot) {
-  resetState(slot);
-  showSaveLoadModal(); // Affiche à nouveau la modale pour voir le changement
+    resetState(slot);
+    showSaveLoadModal();
 }
 
-
-// -------------------------------------------------DEBUT DE NOUVELLE PARTIE ET SES DATABASE------------------------------------------
-
-
-// Fonction pour lancer une nouvelle partie
-// Fonction pour lancer une nouvelle partie
+// ------------------------------------------------DEBUT DE NOUVELLE PARTIE ET SES DATABASE-----------------------------------------------------
 function startNewGame() {
-  // Réinitialise l'état du jeu pour une nouvelle partie
-  state = {
-    gold: 111150,
-    energy: ENERGY_MAX,
-    currentFloor: 1,
-    playerMonsters: [],
-    activeMonsterId: null,
-    energyTimer: null,
-    battle: {
-      running: false,
-      speedIndex: 0,
-      atb: { player: 0, enemy: 0 },
-      intervalId: null
-    },
-    playerItems: [],
-    dailyObjectives: [], // Tableau pour les objectifs du jour
-    lastObjectiveReset: null, // Horodatage de la dernière réinitialisation 
-  };
-  
-  // Donne un monstre de départ
-  const sp = choice(SPECIES.common);
-  const mon = createMonsterFromSpecies(sp);
-  state.playerMonsters.push(mon);
-  state.activeMonsterId = mon.id;
-  generateDailyObjectives();
-  saveState(1); // Sauvegarde la nouvelle partie dans l'emplacement 1
-  
-  showModal('Bienvenue !', `Vous recevez ${mon.name} pour commencer votre aventure !`);
-  showScreen('main'); 
-  renderMain();
-  toggleMusic();
-  document.getElementById('game-music').volume = 0.5;
+    state = {
+        gold: 50,
+        energy: ENERGY_MAX,
+        currentFloor: 1,
+        playerMonsters: [],
+        activeMonsterId: null,
+        energyTimer: null,
+        battle: {
+            running: false,
+            speedIndex: 0,
+            atb: { player: 0, enemy: 0 },
+            intervalId: null
+        },
+        playerItems: [],
+        dailyObjectives: [],
+        lastObjectiveReset: null,
+        lastObjectiveReset: null, // Horodatage de la dernière réinitialisation
+        lastSlotsSpin: null,
+    };
+    
+    // Donne un monstre de départ
+    const sp = choice(SPECIES.common);
+    const mon = createMonsterFromSpecies(sp);
+    state.playerMonsters.push(mon);
+    state.activeMonsterId = mon.id;
+    generateDailyObjectives();
+    saveState(1);
+    
+    showModal('Bienvenue !', `Vous recevez ${mon.name} pour commencer votre aventure !`);
+    showScreen('main'); 
+    renderMain();
+    toggleMusic();
+    document.getElementById('game-music').volume = 0.5;
 }
+
 // Vérifie au chargement de la page si une sauvegarde existe
 window.onload = function() {
     const hasSavedGame = localStorage.getItem('monsterBreederState_slot1') !== null;
@@ -1766,11 +1996,7 @@ window.onload = function() {
     }
 };
 
-
-// ---------------------------------------------- GESTION DE LA MUSIQUE---------------------------------------------------------------
-
-
-// Fonction pour gérer la musique du jeu
+// GESTION DE LA MUSIQUE
 function toggleMusic() {
     const music = document.getElementById('game-music');
     const musicToggleText = document.getElementById('music-toggle');

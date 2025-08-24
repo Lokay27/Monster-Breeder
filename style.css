@@ -1163,3 +1163,194 @@
 #ticket-spin-button.attention {
   animation: pulse 1s infinite;
 }
+
+
+/* =================================================MONSTRODEX================================================== */
+
+/* Style de base pour une carte du Monstrodex */
+/* Conteneur principal du monstrodex */
+#monstrodex-list {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+/* Cartes du monstrodex - Version compacte */
+.monstrodex-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Effet hover pour les cartes possédées */
+.monstrodex-card.owned:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+    border-color: #3498db;
+    cursor: pointer;
+}
+
+/* Style pour les monstres possédés */
+.monstrodex-card.owned {
+    background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+    border-color: #28a745;
+}
+
+/* Style pour les monstres non possédés */
+.monstrodex-card.unowned {
+    background: linear-gradient(135deg, #f8f8f8 0%, #e0e0e0 100%);
+    border-color: #6c757d;
+    opacity: 0.7;
+}
+
+/* Images des monstres - Taille réduite */
+.monstrodex-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0 auto 10px auto;
+    display: block;
+    transition: filter 0.3s ease;
+}
+
+/* Effet de noircissement pour les monstres inconnus */
+.monstrodex-card img.unknown-monster {
+    filter: brightness(0) opacity(0.5);
+}
+
+/* Titres des cartes - Police plus petite */
+.monstrodex-card h3 {
+    font-size: 0.9em;
+    margin: 8px 0 6px 0;
+    color: #2c3e50;
+    font-weight: 600;
+    line-height: 1.2;
+    min-height: 2.4em; /* Pour maintenir une hauteur constante */
+}
+
+/* Texte des cartes */
+.monstrodex-card p {
+    font-size: 0.75em;
+    margin: 4px 0;
+    color: #6c757d;
+}
+
+/* Badge d'évolution */
+.evolution-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.6em;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+    border: 1px solid #ffc107;
+}
+
+/* Style pour les cartes d'évolution */
+.monstrodex-card.evolution-card {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+    border-color: #ffc107;
+    border-left: 4px solid #ffc107;
+}
+
+.monstrodex-card.evolution-card.owned {
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+    border-color: #007bff;
+    border-left: 4px solid #007bff;
+}
+
+/* Styles pour les raretés */
+.rarity.common { color: #6c757d; font-weight: 500; }
+.rarity.rare { color: #17a2b8; font-weight: 600; }
+.rarity.epic { color: #6f42c1; font-weight: 700; }
+
+/* Responsive - Tablettes */
+@media (max-width: 768px) {
+    .type-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+    
+    .monstrodex-card {
+        min-height: 180px;
+        padding: 10px;
+    }
+    
+    .monstrodex-card img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .monstrodex-card h3 {
+        font-size: 0.8em;
+    }
+    
+    .monstrodex-card p {
+        font-size: 0.7em;
+    }
+}
+
+/* Responsive - Mobiles */
+@media (max-width: 480px) {
+    .type-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .monstrodex-card {
+        min-height: 160px;
+        padding: 8px;
+    }
+    
+    .monstrodex-card img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .monstrodex-card h3 {
+        font-size: 0.75em;
+        margin: 6px 0 4px 0;
+    }
+    
+    .monstrodex-card p {
+        font-size: 0.65em;
+        margin: 2px 0;
+    }
+    
+    .evolution-badge {
+        font-size: 0.5em;
+        padding: 2px 4px;
+    }
+}
+
+/* Animation d'apparition pour les cartes */
+.monstrodex-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

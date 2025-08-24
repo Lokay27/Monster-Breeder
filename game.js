@@ -272,10 +272,12 @@ function showScreen(id) {
     let targetId;
     if (id === 'evolution') {
         targetId = 'evolution-screen';
-    }  else if (id === 'slots') {
+    } else if (id === 'slots') {
         targetId = 'slots-screen';
         initSlotsScreen();
-    }else {
+    } else if (id === 'monstrodex') {  // AJOUT DE CETTE CONDITION
+        targetId = 'monstrodex-screen';
+    } else {
         targetId = id + '-screen';
     }
 
@@ -286,13 +288,16 @@ function showScreen(id) {
     } else {
         console.error(`Erreur: L'écran avec l'ID '${targetId}' n'a pas été trouvé.`);
     }
-
+    
     if(id === 'main') renderMain();
     if(id === 'collection') renderCollection();
     if(id === 'shop') renderShop();
     if(id === 'inventory') renderInventory();
     if (id === 'objectives') {
         renderObjectives();
+    }
+    if (id === 'monstrodex') {  // AJOUT DE CETTE CONDITION
+        renderMonstrodex();
     }
 }
 
@@ -434,7 +439,7 @@ function createMonsterFromSpecies(species) {
 
     const monster = {
         id: createId(),
-        species: species.id,
+        speciesId: species.id,
         name: species.name,
         image: species.image,
         type: species.type,
@@ -585,6 +590,129 @@ function renderCollection() {
 function getMonsterSellPrice(monster) {
     const basePrice = getMonsterBasePrice(monster);
     return Math.floor(basePrice * MONSTER_SELL_RATE);
+}
+
+// ---------Ecran du Monstrodex---------------------//
+
+function renderMonstrodex() {
+    const container = document.getElementById('monstrodex-list');
+    container.innerHTML = '';
+    
+    // Combine toutes les espèces de base
+    const baseSpecies = Object.values(SPECIES).flat();
+    
+    // Créer une map des évolutions par espèce de base
+    const evolutionMap = {};
+    Object.keys(EVOLUTIONS).forEach(baseSpeciesId => {
+        const evolutionData = EVOLUTIONS[baseSpeciesId];
+        evolutionMap[baseSpeciesId] = EVOLVED_SPECIES[evolutionData.evolvesTo];
+    });
+    
+    // Trier les espèces de base par rareté puis par nom
+    const rarityOrder = { common: 1, rare: 2, epic: 3 };
+    baseSpecies.sort((a, b) => {
+        if (rarityOrder[a.rarity] !== rarityOrder[b.rarity]) {
+            return rarityOrder[a.rarity] - rarityOrder[b.rarity];
+        }
+        return a.name.localeCompare(b.name);
+    });
+    
+    // Créer les cartes
+    baseSpecies.forEach(species => {
+        // Créer la carte pour l'espèce de base
+        createMonsterCard(species, false, container);
+        
+        // Si cette espèce a une évolution, créer sa carte juste après
+        const evolution = evolutionMap[species.id];
+        if (evolution) {
+            createMonsterCard(evolution, true, container);
+        }
+    });
+    
+    // Ajouter les évolutions qui n'ont pas de forme de base dans EVOLUTIONS
+    Object.values(EVOLVED_SPECIES).forEach(species => {
+        // Vérifier si cette évolution n'a pas déjà été ajoutée
+        const hasBaseForm = Object.values(EVOLUTIONS).some(evo => evo.evolvesTo === species.id);
+        if (!hasBaseForm) {
+            createMonsterCard(species, true, container);
+        }
+    });
+}
+
+function createMonsterCard(species, isEvolution, container) {
+    const hasMonster = state.playerMonsters.some(m => m.speciesId === species.id);
+    const card = document.createElement('div');
+    card.classList.add('monstrodex-card');
+    
+    if (isEvolution) {
+        card.classList.add('evolution-card');
+    }
+    
+    if (hasMonster) {
+        card.classList.add('owned');
+        card.onclick = () => showMonsterStatsModal(species);
+        card.style.cursor = 'pointer';
+    } else {
+        card.classList.add('unowned');
+    }
+    
+    // Image avec effet de noircissement pour les monstres non possédés
+    const imageElement = hasMonster ? 
+        `<img src="${species.image}" alt="${species.name}">` :
+        `<img src="${species.image}" alt="???" class="unknown-monster">`;
+    
+    // Indicateur d'évolution
+    const evolutionBadge = isEvolution ? '<span class="evolution-badge">⭐ Évolution</span>' : '';
+    
+    card.innerHTML = `
+        ${imageElement}
+        ${evolutionBadge}
+        <h3>${hasMonster ? species.name : '???'}</h3>
+        <p>Type: ${hasMonster ? species.type : '???'}</p>
+        <p>Rareté: <span class="rarity ${hasMonster ? species.rarity : ''}">${hasMonster ? species.rarity : '???'}</span></p>
+    `;
+    
+    container.appendChild(card);
+}
+
+
+function showMonsterStatsModal(species) {
+    // Vérifier les informations d'évolution
+    let evolutionInfo = '';
+    const evolutionData = EVOLUTIONS[species.id];
+    
+    if (evolutionData) {
+        const evolvedSpecies = EVOLVED_SPECIES[evolutionData.evolvesTo];
+        if (evolvedSpecies) {
+            evolutionInfo = `
+                <hr style="margin: 20px 0; border: 1px solid #ddd;">
+                <h4 style="color: #e74c3c; margin-bottom: 10px;">Évolution disponible :</h4>
+                <p><strong>Évolue en :</strong> ${evolvedSpecies.name}</p>
+                <p><strong>Conditions :</strong></p>
+                <ul style="margin-left: 20px;">
+                    ${evolutionData.condition.level ? `<li>Niveau ${evolutionData.condition.level}</li>` : ''}
+                    ${evolutionData.condition.victories ? `<li>${evolutionData.condition.victories} victoires</li>` : ''}
+                </ul>
+            `;
+        }
+    }
+    
+    const statsContent = `
+        <div style="text-align: center;">
+            <h3>${species.name}</h3>
+            <img src="${species.image}" alt="${species.name}" style="width: 150px; height: 150px; margin-bottom: 20px;">
+            <div style="text-align: left;">
+                <p><strong>Type:</strong> ${species.type}</p>
+                <p><strong>Rareté:</strong> <span class="rarity ${species.rarity}">${species.rarity}</span></p>
+                <p><strong>Attaque de base:</strong> ${species.attack}</p>
+                <p><strong>Défense de base:</strong> ${species.defense}</p>
+                <p><strong>PV de base:</strong> ${species.hp}</p>
+                ${evolutionInfo}
+            </div>
+        </div>
+    `;
+    
+    showModal(species.name, statsContent);
 }
 
 // ===========================================================================================================================================

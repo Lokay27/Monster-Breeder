@@ -321,6 +321,29 @@ function closeModal() {
   window.confirmModal = null;
 }
 
+function showHelpModal() {
+    const helpContent = `
+        <h3>⁉️ Aide et Fonctionnalités du jeu ⁉️</h3>
+        <h4>🎮 Le but du jeu 🎮</h4>
+        <p>Élevez et entraînez vos monstres pour qu'ils deviennent les plus puissants. Affrontez des ennemis pour gagner de l'or, de l'expérience et des objets rares.</p>
+        <p> <strong>Objectif:</strong> Atteindre les sommets </p>
+        <h4>⚡ L'Énergie ⚡</h4>
+        <p>Chaque combat consomme 1 point d'énergie. L'énergie se régénère automatiquement avec le temps, même quand le jeu est fermé !</p>
+        
+        <h4>🎰 La Roulette Quotidienne 🎰</h4>
+        <p>Tentez votre chance une fois par jour pour gagner des récompenses spéciales. Vous pouvez aussi acheter des tickets pour plus de tours dans la boutique.</p>
+        
+        <h4>📦 L'Inventaire 📦</h4>
+        <p>Gardez un œil sur vos monstres et les objets que vous collectez. Équipez vos monstres avec des objets pour augmenter leurs statistiques.</p>
+        
+        <h4> 🧺La Boutique 🧺</h4>
+        <p>Achetez des objets utiles à votre progression en utilisant l'or que vous gagnez au combat.</p>
+    `;
+    
+    // Affiche la modale avec le contenu d'aide
+    showModal('Comment jouer ?', `<div class="scrollable-content">${helpContent}</div>`);
+}
+
 function getSpecies(monsterName) {
   for (const rarity in SPECIES) {
     const found = SPECIES[rarity].find(species => species.name === monsterName);
@@ -1435,7 +1458,6 @@ function evolveMonster(monster, newSpeciesId) {
         const finalStats = getFinalStats(monster);
         monster.hp = finalStats.hp;
 
-        monster.victories = 0;
 
         evolutionImage.src = monster.image;
         evolutionImage.classList.remove('evolve-animation');
@@ -2081,7 +2103,7 @@ function resetAndReload(slot) {
 // ------------------------------------------------DEBUT DE NOUVELLE PARTIE ET SES DATABASE-----------------------------------------------------
 function startNewGame() {
     state = {
-        gold: 111150,
+        gold: 50,
         energy: ENERGY_MAX,
         currentFloor: 1,
         playerMonsters: [],

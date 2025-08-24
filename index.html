@@ -12,8 +12,12 @@
 </head>
 <body>
   <header>
-    <div class="stat">🎶 Musique : <span id="music-toggle" onclick="toggleMusic()">ON</span></div>
-    <div class="stat">🔊 Volume : <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume()"></div>
+    <div class="header-controls">
+        <div class="stat">🎶 Musique : <span id="music-toggle" onclick="toggleMusic()">ON</span></div>
+        <div class="stat">🔊 Volume : <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume()"></div>
+    </div>
+    
+    <div class="stat help-button" onclick="showHelpModal()">❓ Aide</div>
   </header>
   <audio id="game-music" loop>
     <source src="audio/mixkit-to-the-next-round-1047.mp3" type="audio/mpeg">
@@ -33,11 +37,11 @@
 
   <!-- Écran principal -->
   <section id="main-screen" class="screen hidden">
-    <header class="topbar">
+    <section class="topbar">
       <div class="stat">💰 Or : <span id="gold">0</span></div>
       <div class="stat">⚡ Énergie : <span id="energy">10</span>/<span id="energy-max">10</span></div>
       <div class="stat">🗼 Étage : <span id="floor">1</span></div>
-    </header>
+    </section>
 
     <div id="active-monster"></div>
 

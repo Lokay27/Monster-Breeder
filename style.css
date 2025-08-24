@@ -913,6 +913,11 @@
     animation: evolve-transition 4s ease-in-out;
 }
 
+.evolution-ready {
+    color: #FFD700; /* Or ou une couleur vive */
+    font-weight: bold;
+}
+
 
 /* ====================================================== ROULETTE ======================================================================== */
 
@@ -1090,4 +1095,15 @@
         padding: 10px 20px;
         font-size: 1em;
     }
+}
+
+/* bouton d'utilisation d'un ticket */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+#ticket-spin-button.attention {
+  animation: pulse 1s infinite;
 }

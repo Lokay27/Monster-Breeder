@@ -171,6 +171,7 @@ const ITEMS = [
   {id: 'xp_boost_200',name: 'Jeton d\'XP (200)',price: 1000, description: 'Ajoute 200 points d\'expérience au monstre actif.',type: 'xp', bonus: 200, image: 'image/items/xp200.png',sellValue: 0,rarity: 'common',},
   {id: 'xp_boost_500',name: 'Jeton d\'XP (500)',price: 2300, description: 'Ajoute 500 points d\'expérience au monstre actif.',type: 'xp', bonus: 500, image: 'image/items/xp500.png',sellValue: 0,rarity: 'rare',},
   {id: 'energyboost10',name: 'Jeton d\'Energie (10)',price: 480, description: 'Ajoute 10 points d\'énergie.',type: 'energy', bonus: 10, image: 'image/items/energy10.png',sellValue: 0,rarity: 'commun',},
+  {id: 'ticketroulette',name: 'Ticket de Roulette',price: 500, description: 'Permet de faire tourner la roue une fois de plus.',type: 'consumable', effect: 'slots_spin', image: 'image/items/ticketroulette.png',sellValue: 100,rarity: 'rare',},
 ];
 
 // ---------------------------------------------------------ITEMS DE VICTOIRE DE BOSS-------------------------------------------------------------------
@@ -474,6 +475,17 @@ function renderMain(){
         </div>
     `).join('');
 
+    // Ajout du compteur de victoires
+    let victoriesHtml = `<div class="statline">Victoires : ${m.victories}</div>`;
+    const evolutionInfo = EVOLUTIONS[m.species];
+    if (evolutionInfo) {
+        const victoriesNeeded = evolutionInfo.condition.victories;
+        victoriesHtml = `<div class="statline">Victoires : ${m.victories}/${victoriesNeeded}</div>`;
+        if (m.evolutionPending) {
+            victoriesHtml += `<div class="statline evolution-ready">Prêt à évoluer en ${EVOLVED_SPECIES[evolutionInfo.evolvesTo].name} !</div>`;
+        }
+    }
+
     container.innerHTML = `
       <div class="card">
         <img class="monster-img" src="${m.image}" alt="${m.name}">
@@ -491,6 +503,7 @@ function renderMain(){
           <div class="statline">VIT ${finalStats.speed}</div>
           <div class="statline">PV ${m.hp}/${finalStats.hp}</div>
         </div>
+        ${victoriesHtml}
       </div>
     `;
 }
@@ -516,6 +529,17 @@ function renderCollection() {
             maxFloorHTML = `<div class="statline">Étage max : ${m.maxFloor}</div>`;
         }
 
+        // Ajout du compteur de victoires
+        let victoriesHtml = `<div class="statline">Victoires : ${m.victories}</div>`;
+        const evolutionInfo = EVOLUTIONS[m.species];
+        if (evolutionInfo) {
+            const victoriesNeeded = evolutionInfo.condition.victories;
+            victoriesHtml = `<div class="statline">Victoires : ${m.victories}/${victoriesNeeded}</div>`;
+            if (m.evolutionPending) {
+                victoriesHtml += `<div class="statline evolution-ready">Prêt à évoluer en ${EVOLVED_SPECIES[evolutionInfo.evolvesTo].name} !</div>`;
+            }
+        }
+
         div.innerHTML = `
             <img class="monster-img" src="${m.image}" alt="${m.name}">
             <h3>${m.name} <span class="badge ${m.rarity}">${m.rarity.toUpperCase()}</span></h3>
@@ -524,6 +548,7 @@ function renderCollection() {
             <div class="bar xpbar"><div class="xpfill" style="width:${xpPct}%"></div></div>
             <div class="statline">ATQ ${finalStats.attack} • DEF ${finalStats.defense} • VIT ${finalStats.speed} • PV ${m.hp}/${finalStats.hp}</div>
             ${maxFloorHTML}
+            ${victoriesHtml}
             <div class="row">
                 <button class="btn" onclick="setActiveMonster('${m.id}')">Activer</button>
                 <button class="btn btn-mini" ${sellBtnDisabled} onclick="sellMonster('${m.id}')">${sellBtnText}</button>
@@ -732,18 +757,25 @@ function renderInventory() {
         `;
         
         // Différenciation des boutons selon le type d'objet
-        const isConsumable = ['xp', 'energy'].includes(item.type);
-        
-        if (isConsumable) {
-            // Objets consommables : bouton "Utiliser" et "Vendre"
+       // --- Cas spécial : ticket de roulette ---
+        if (item.id === 'ticketroulette') {
+            itemCard.innerHTML += `
+                <div class="item-actions">
+                    <button class="btn btn-sell" onclick="sellItem(${index})">Vendre</button>
+                </div>
+            `;
+        }
+        // --- Objets consommables classiques (xp, énergie) ---
+        else if (['xp', 'energy'].includes(item.type)) {
             itemCard.innerHTML += `
                 <div class="item-actions">
                     <button class="btn btn-use" onclick="useItem('${item.uniqueId}')">Utiliser</button>
                     <button class="btn btn-sell" onclick="sellItem(${index})">Vendre</button>
                 </div>
             `;
-        } else {
-            // Objets équipables : logique existante
+        }
+        // --- Objets équipables ---
+        else {
             if (isEquipped) {
                 itemCard.innerHTML += `
                     <button class="btn btn-unequip" onclick="unequipItem('${item.type}')">Déséquiper</button>
@@ -845,7 +877,7 @@ function generateRandomBonus(min, max) {
 function createItemInstance(itemData) {
     const newItem = {
         ...itemData,
-        id: Math.random().toString(36).slice(2),
+        uniqueId: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),  // Changé de 'id' à 'uniqueId'
         description: "",
         stats: {}
     };
@@ -1236,6 +1268,33 @@ function startEnergyRegen(){
     }, ENERGY_REGEN_MS);
 }
 
+function checkOfflineEnergyRegen() {
+    // Vérifie si un horodatage de connexion existe
+    if (state.lastLoginTime) {
+        const now = Date.now();
+        const timeElapsed = now - state.lastLoginTime; // Temps écoulé en millisecondes
+        
+        // Calcule la quantité d'énergie à régénérer
+        // ENERGY_REGEN_MS est une constante que vous avez déjà
+        const energyToRegen = Math.floor(timeElapsed / ENERGY_REGEN_MS); 
+        
+        if (energyToRegen > 0) {
+            const oldEnergy = state.energy;
+            state.energy = Math.min(state.energy + energyToRegen, ENERGY_MAX);
+            
+            // Affiche un message pour le joueur
+            if (state.energy > oldEnergy) {
+                showModal('Régénération d\'énergie !', `Vous avez récupéré ${state.energy - oldEnergy} énergie pendant votre absence !`);
+            }
+        }
+    }
+    // Met à jour le dernier horodatage pour la prochaine fois
+    state.lastLoginTime = Date.now();
+    saveState(1);
+}
+
+// ----------------------------------------------------------- VENTE DE MONSTRE-----------------------------------------------------------
+
 // Vendre un monstre
 function sellMonster(monsterId) {
     const monsterIndex = state.playerMonsters.findIndex(m => m.id === monsterId);
@@ -1611,6 +1670,25 @@ function initSlotsScreen() {
         spinButton.disabled = false;
         spinButton.textContent = 'Tenter ma chance !';
     }
+
+    // === Gestion du bouton ticket ===
+    const ticketBtn = document.getElementById('ticket-spin-button');
+    const hasTicket = state.playerItems.some(item => item.id === 'ticketroulette');
+
+    if (hasTicket) {
+        ticketBtn.classList.remove('hidden');
+        ticketBtn.disabled = false;
+        ticketBtn.textContent = "Utiliser un ticket";
+        // ✨ Ajoute la pulsation
+        ticketBtn.classList.add("attention");
+    } else {
+        ticketBtn.classList.add('hidden');
+        // ❌ Retire la pulsation
+        ticketBtn.classList.remove("attention");
+    }
+
+    // Branche l’action ticket
+    ticketBtn.onclick = useTicketSpin;
 }
 
 // Donne la récompense au joueur
@@ -1679,63 +1757,56 @@ function giveReward(rewardType) {
     renderMain();
 }
 
-// Lance l'animation et donne la récompense
-function spinSlots() {
+// 🔧 Logique commune du spin (animation + récompense)
+// markDailyUsed = true  -> spin quotidien (on marque l'usage du jour)
+// markDailyUsed = false -> spin via ticket (on NE touche PAS au timer)
+function performSlotsSpin(markDailyUsed) {
     const spinButton = document.getElementById('spin-button');
     const reel = document.getElementById('slots-reel');
     const reelContent = reel.querySelector('.reel-content');
-    const rewards = Object.keys(REWARD_IMAGES);
     const today = new Date().toDateString();
 
-    // Vérifie si la roulette a déjà été utilisée aujourd'hui
-    if (state.lastSlotsSpin === today) {
-        showModal('Limite atteinte', 'Vous avez déjà utilisé la roulette aujourd\'hui. Revenez demain !');
-        return;
-    }
+    // L'état AVANT le spin (utile pour restaurer le bouton si spin via ticket)
+    const hadFreeSpin = state.lastSlotsSpin !== today;
 
-    // NOUVEAUTÉ : Sons de la machine à sous
+    // --- Sons ---
     const spinSound = new Audio('sounds/machine-a-sous-en-mouvement.mp3');
     const victorySound = new Audio('sounds/machine-a-sous-victoire.mp3');
-    
-    // Configure le son de rotation (en boucle)
     spinSound.loop = true;
-    spinSound.volume = 0.6; // Volume ajustable
-    
-    // Configure le son de victoire
+    spinSound.volume = 0.6;
     victorySound.volume = 0.8;
 
-    // Désactive le bouton pendant l'animation
-    spinButton.disabled = true;
-    spinButton.textContent = 'En cours...';
+    // Désactive le bouton principal le temps de l’animation
+    if (spinButton) {
+        spinButton.disabled = true;
+        spinButton.textContent = 'En cours...';
+    }
 
-    // NOUVEAUTÉ : Lance le son de rotation
+    // Lancer le son de rotation
     spinSound.play().catch(e => console.log('Erreur son rotation:', e));
 
-    // Ajoute une classe pour l'effet visuel de rotation
+    // Effet visuel
     reelContent.classList.add('spinning');
 
-    // Sélectionne la récompense finale
+    // --- Sélection de la récompense ---
     const result = choiceWithProbabilities(REWARD_PROBABILITIES);
-    
-    // Trouve l'index du résultat dans la liste des symboles générés
+
+    // Trouver/poser le symbole gagnant
     const symbols = reelContent.querySelectorAll('.slot-symbol');
     const totalSymbols = symbols.length;
-    
-    console.log(`Total de symboles disponibles: ${totalSymbols}`);
-    
-    // Cherche un symbole correspondant dans la moitié supérieure pour éviter les problèmes
+
     let winningIndex = -1;
-    const startSearch = Math.floor(totalSymbols * 0.3); // Commence à 30% de la liste
-    const endSearch = Math.floor(totalSymbols * 0.7);   // Finit à 70% de la liste
-    
+    const startSearch = Math.floor(totalSymbols * 0.3);
+    const endSearch = Math.floor(totalSymbols * 0.7);
+
     for (let i = startSearch; i < endSearch; i++) {
         if (symbols[i] && symbols[i].dataset.reward === result) {
             winningIndex = i;
             break;
         }
     }
-    
-    // Si on ne trouve pas le symbole, on en modifie un existant
+
+    // Si on n'a pas trouvé, on force un emplacement gagnant
     if (winningIndex === -1) {
         winningIndex = startSearch + Math.floor(Math.random() * (endSearch - startSearch));
         if (symbols[winningIndex]) {
@@ -1748,67 +1819,111 @@ function spinSlots() {
         }
     }
 
-    console.log(`Récompense sélectionnée: ${result}, Index: ${winningIndex}/${totalSymbols}`);
-
-    // Calcule l'animation avec les nouvelles dimensions
-    const symbolHeight = 50; // Doit correspondre à la hauteur forcée dans initSlotsScreen
+    // --- Animation ---
+    const symbolHeight = 50; // doit correspondre à ton CSS
     const containerHeight = 150;
     const centerOffset = (containerHeight / 2) - (symbolHeight / 2);
-    
-    // Nombre de tours complets (modéré car on a plus de symboles maintenant)
     const fullRotations = Math.floor(Math.random() * 3) + 3; // 3 à 5 tours
-    
-    // Distance pour les tours complets
     const fullRotationDistance = fullRotations * containerHeight;
-    
-    // Position finale pour centrer le symbole gagnant
     const finalPosition = -(winningIndex * symbolHeight) + centerOffset;
-    
-    // Distance totale avec une marge de sécurité
     const totalTranslateY = -(fullRotationDistance + Math.abs(finalPosition));
 
-    console.log(`Animation: ${fullRotations} tours, distance totale: ${totalTranslateY}px, position finale: ${finalPosition}px`);
-
-    // PHASE 1 : Animation rapide (2.5 secondes)
+    // Phase 1
     reelContent.style.transition = 'transform 2.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
     reelContent.style.transform = `translateY(${totalTranslateY}px)`;
 
-    // PHASE 2 : Ralentissement vers la position finale (1.5 secondes)
+    // Phase 2
     setTimeout(() => {
         reelContent.style.transition = 'transform 1.5s cubic-bezier(0.23, 1, 0.320, 1)';
         reelContent.style.transform = `translateY(${finalPosition}px)`;
     }, 2500);
 
-    // Attend la fin de l'animation complète pour donner la récompense
+    // Fin d'animation → récompense & UI
     setTimeout(() => {
-        // NOUVEAUTÉ : Arrête le son de rotation
+        // Stop son rotation, jouer victoire
         spinSound.pause();
-        spinSound.currentTime = 0; // Remet le son au début
-        
-        // NOUVEAUTÉ : Lance le son de victoire
+        spinSound.currentTime = 0;
         victorySound.play().catch(e => console.log('Erreur son victoire:', e));
-        
+
+        // Donner la récompense
         giveReward(result);
-        // Met à jour la date de la dernière rotation
-        state.lastSlotsSpin = today;
-        spinButton.disabled = true;
-        spinButton.textContent = 'Déjà utilisé aujourd\'hui';
-        // Sauvegarde l'état
-        saveState(1);
-        // Garde la position finale pour afficher le symbole gagnant
-        reelContent.classList.remove('spinning');
-        
-        // Met en surbrillance uniquement le symbole gagnant
-        symbols.forEach((symbol, index) => {
-            if (index === winningIndex) {
-                symbol.classList.add('winning-symbol');
-                console.log(`Symbole gagnant affiché: ${symbol.dataset.reward} à l'index ${index}`);
-            } else {
-                symbol.classList.remove('winning-symbol');
+
+        // Marquage du timer ou non
+        if (markDailyUsed) {
+            // spin quotidien
+            state.lastSlotsSpin = today;
+            if (spinButton) {
+                spinButton.disabled = true;
+                spinButton.textContent = 'Déjà utilisé aujourd\'hui';
             }
+            saveState(1);
+        } else {
+            // spin via ticket : ne touche pas au timer !
+            // On restaure l'état du bouton selon s'il reste le spin gratuit du jour
+            if (spinButton) {
+                if (hadFreeSpin) {
+                    spinButton.disabled = false;
+                    spinButton.textContent = 'Tenter ma chance !';
+                } else {
+                    spinButton.disabled = true;
+                    spinButton.textContent = 'Déjà utilisé aujourd\'hui';
+                }
+            }
+        }
+
+        // Highlight du symbole gagnant
+        reelContent.classList.remove('spinning');
+        symbols.forEach((symbol, index) => {
+            if (index === winningIndex) symbol.classList.add('winning-symbol');
+            else symbol.classList.remove('winning-symbol');
         });
-    }, 4000); // 2.5s + 1.5s = 4s au total
+    }, 4000); // 2.5s + 1.5s
 }
+
+
+
+// Lance l'animation et donne la récompense
+function spinSlots() {
+    const today = new Date().toDateString();
+    if (state.lastSlotsSpin === today) {
+        showModal('Limite atteinte', 'Vous avez déjà utilisé la roulette aujourd\'hui. Revenez demain !');
+        return;
+    }
+    // On lance la logique commune en marquant l'usage du jour
+    performSlotsSpin(true);
+}
+
+
+function useTicketSpin() {
+    const ticketIndex = state.playerItems.findIndex(item => item.id === 'ticketroulette');
+    if (ticketIndex === -1) {
+        showModal("Erreur", "Vous n'avez pas de ticket !");
+        return;
+    }
+
+    // Consommer un ticket
+    state.playerItems.splice(ticketIndex, 1);
+    saveState(1);
+    renderInventory();
+
+    // Met à jour uniquement la visibilité du bouton ticket (sans réinitialiser la roue)
+    const ticketBtn = document.getElementById('ticket-spin-button');
+    const stillHasTicket = state.playerItems.some(item => item.id === 'ticketroulette');
+    if (ticketBtn) {
+        if (stillHasTicket) {
+            ticketBtn.classList.remove('hidden');
+            ticketBtn.disabled = false;
+            ticketBtn.textContent = "Utiliser un ticket";
+        } else {
+            ticketBtn.classList.add('hidden');
+        }
+    }
+
+    // 🔥 Lance la roulette SANS appliquer la limite quotidienne
+    performSlotsSpin(false);
+}
+
+
 
 // Fonction utilitaire pour choisir un élément en fonction des probabilités
 function choiceWithProbabilities(probs) {
@@ -1884,10 +1999,22 @@ function loadState(slotId) {
     const savedState = localStorage.getItem(`monsterBreederState_slot${slotId}`);
     if (savedState) {
         state = JSON.parse(savedState);
+        if (!state.lastLoginTime) {
+            state.lastLoginTime = Date.now();
+        }
         if (!state.dailyObjectives) {
             state.dailyObjectives = [];
         }
+        // Migration : Corriger les items de boss avec id au lieu de uniqueId
+        state.playerItems.forEach(item => {
+            if (item.id && !item.uniqueId) {
+                item.uniqueId = item.id;
+                delete item.id; // Optionnel
+            }
+        });
+        checkOfflineEnergyRegen();
         showModal('Partie chargée', `La sauvegarde ${slotId} a été chargée avec succès !`);
+        renderMain();
     } else {
         showModal('Aucune sauvegarde', `Il n'y a pas de sauvegarde dans l'emplacement ${slotId}.`);
     }
@@ -1954,7 +2081,7 @@ function resetAndReload(slot) {
 // ------------------------------------------------DEBUT DE NOUVELLE PARTIE ET SES DATABASE-----------------------------------------------------
 function startNewGame() {
     state = {
-        gold: 50,
+        gold: 111150,
         energy: ENERGY_MAX,
         currentFloor: 1,
         playerMonsters: [],
@@ -1969,8 +2096,8 @@ function startNewGame() {
         playerItems: [],
         dailyObjectives: [],
         lastObjectiveReset: null,
-        lastObjectiveReset: null, // Horodatage de la dernière réinitialisation
         lastSlotsSpin: null,
+        lastLoginTime: Date.now(),
     };
     
     // Donne un monstre de départ
@@ -1979,6 +2106,7 @@ function startNewGame() {
     state.playerMonsters.push(mon);
     state.activeMonsterId = mon.id;
     generateDailyObjectives();
+    checkOfflineEnergyRegen(); // Juste pour être sûr que l'horodatage est bien mis à jour à la première connexion
     saveState(1);
     
     showModal('Bienvenue !', `Vous recevez ${mon.name} pour commencer votre aventure !`);

@@ -35,18 +35,26 @@ const EGG_PROBABILITIES = {
 
 // ---------------------------------------------- CONSTANTE POUR LETYPE DE PETIT MONSTRE----------------------------------------------------------
 
-const TYPE_ADV = { // Tableau des avantages simple par type
-  eau: 'feu',
-  feu: 'plante',
-  plante: 'eau'
-  // terre: neutre
+const TYPE_ADV = {
+    feu: ['plante', 'glace'],
+    eau: ['feu', 'terre'],
+    plante: ['eau', 'terre'],
+    terre: ['feu', 'electrique'],
+    electrique: ['eau', 'fée'],
+    glace: ['plante', 'fée'],
+    fée: ['glace', 'electrique'],
 };
 
 function typeMultiplier(attType, defType){
-  if(attType === 'terre' || defType === 'terre') return 1.0;
-  if(TYPE_ADV[attType] === defType) return 1.5;       // avantage
-  if(TYPE_ADV[defType] === attType) return 0.75;      // désavantage
-  return 1.0;
+    // Utilisation de .includes() pour vérifier si le type défensif est dans le tableau des types avantageux
+    if (TYPE_ADV[attType].includes(defType)) {
+        return 1.5;
+    }
+    // Vérification du désavantage
+    if (TYPE_ADV[defType].includes(attType)) {
+        return 0.75;
+    }
+    return 1.0;
 }
 
 // ---------------------------------------------------------- Base d'espèces (fixes)--------------------------------------------------------
@@ -60,14 +68,17 @@ const SPECIES = {
     { id: 'vaguejunior', name: 'Vague Junior', type: 'eau', rarity:'common', attack: 13, defense: 7, hp: 20, image: "image/Eau/vaguejunior.png" },
     { id: 'bullot', name: 'Bullot', type: 'eau', rarity:'common', attack: 10, defense: 10, hp: 20, image: "image/Eau/bullot.png" },
     { id: 'hydranon', name: 'Hydranon', type: 'eau', rarity:'common', attack: 15, defense: 5, hp: 20, image: "image/Eau/hydranon.png" },
+    { id: 'escarglace',name: 'Escarglace',type: 'eau',rarity: 'common',attack: 13,defense: 9,hp: 21,image: "image/Eau/escarglace.png"},
+    
     
     // Feu
-    { id: 'embraseur', name: 'Embraseur', type: 'feu', rarity:'common', attack: 15, defense: 5, hp: 20, image: "image/Feu/embraseur.png" },
+    { id: 'embraseur', name: 'Embraseur', type: 'feu', rarity:'common', attack: 15, defense: 6, hp: 20, image: "image/Feu/embraseur.png" },
     { id: 'braizon', name: 'Braizon', type: 'feu', rarity:'common', attack: 13, defense: 7, hp: 20, image: "image/Feu/braizon.png" },
-    { id: 'pyron', name: 'Pyron', type: 'feu', rarity:'common', attack: 16, defense: 4, hp: 20, image: "image/Feu/pyron.png" },
+    { id: 'pyron', name: 'Pyron', type: 'feu', rarity:'common', attack: 16, defense: 6, hp: 20, image: "image/Feu/pyron.png" },
     { id: 'flambino', name: 'Flambino', type: 'feu', rarity:'common', attack: 14, defense: 6, hp: 20, image: "image/Feu/Flambino.png" },
+    { id: 'floconfeu', name: 'Floconfon', type: 'feu', rarity:'common', attack: 15, defense: 9, hp: 19, image: "image/Feu/floconfeu.png" },
     { id: 'cendrillon', name: 'Cendrillon', type: 'feu', rarity:'common', attack: 12, defense: 8, hp: 20, image: "image/Feu/cendrillon.png" },
-    { id: 'incendium', name: 'Incendium', type: 'feu', rarity:'common', attack: 17, defense: 3, hp: 20, image: "image/Feu/incendium.png"},
+    { id: 'incendium', name: 'Incendium', type: 'feu', rarity:'common', attack: 17, defense: 3, hp: 22, image: "image/Feu/incendium.png"},
     
     // Plante
     { id: 'florin', name: 'Florin', type: 'plante', rarity:'common', attack: 10, defense: 10, hp: 20, image: "image/Plante/Florin.png" },
@@ -76,6 +87,10 @@ const SPECIES = {
     { id: 'fleurie', name: 'Fleurie', type: 'plante', rarity:'common', attack: 12, defense: 8, hp: 20, image: "image/Plante/Fleurie.png" },
     { id: 'champi', name: 'Champi', type: 'plante', rarity:'common', attack: 8, defense: 12, hp: 20, image: "image/Plante/champi.png" },
     { id: 'sylvanos', name: 'Sylvanos', type: 'plante', rarity:'common', attack: 10, defense: 10, hp: 20, image: "image/Plante/sylvanos.png"},
+    { id: 'terreau',name: 'Terreau',type: 'plante',rarity: 'common',attack: 10,defense: 10,hp: 20,image: "image/Plante/terreau.png"},
+    { id: 'dormor',name: 'Dormor',type: 'plante',rarity: 'common',attack: 8,defense: 15,hp: 20,image: "image/Plante/dormor.png"},
+    { id: 'graineau',name: 'Graineau',type: 'plante',rarity: 'common',attack: 10,defense: 10,hp: 20,image: "image/Plante/graineau.png"},
+    
     
     // Terre
     { id: 'caillou', name: 'Caillou', type: 'terre', rarity:'common', attack: 10, defense: 12, hp: 20, image: "image/Terre/caillou.png" },
@@ -83,7 +98,22 @@ const SPECIES = {
     { id: 'mineralien', name: 'Minéralien', type: 'terre', rarity:'common', attack: 11, defense: 11, hp: 20, image: "image/Terre/minéralien.png" },
     { id: 'galette', name: 'Galette', type: 'terre', rarity:'common', attack: 12, defense: 10, hp: 20, image: "image/Terre/galette.png" },
     { id: 'pebble', name: 'Pebble', type: 'terre', rarity:'common', attack: 13, defense: 9, hp: 20, image: "image/Terre/pebble.png" },
-    { id: 'geodon', name: 'Géodon', type: 'terre', rarity:'common', attack: 10, defense: 12, hp: 20, image: "image/Terre/géodon.png" }
+    { id: 'bouledesol', name: 'Bouledesol', type: 'terre', rarity:'common', attack: 8, defense: 15, hp: 20, image: "image/Terre/bouledesol.png" },
+    { id: 'geodon', name: 'Géodon', type: 'terre', rarity:'common', attack: 10, defense: 12, hp: 20, image: "image/Terre/géodon.png" },
+
+    // Electrique
+    { id: 'voltibat', name: 'Voltibat', type: 'electrique', rarity:'common', attack: 12, defense: 8, hp: 20, image: "image/Electrique/voltibat.png" },
+    { id: 'camolt', name: 'Camolt', type: 'electrique', rarity:'common', attack: 14, defense: 10, hp: 19, image: "image/Electrique/camolt.png" },
+    { id: 'hamstilt', name: 'Hamstilt', type: 'electrique', rarity:'common', attack: 10, defense: 13, hp: 20, image: "image/Electrique/hamstilt.png" },
+    // Fée
+    { id: 'roseponge', name: 'Roséponge', type: 'fée', rarity:'common', attack: 10, defense: 10, hp: 20, image: "image/Fée/roseponge.png" },
+    { id: 'nuagifee', name: 'Nuagifée', type: 'fée', rarity:'common', attack: 13, defense: 9, hp: 20, image: "image/Fée/nuagifee.png" },
+    { id: 'cheunille',name: 'cheunille',type: 'fée',rarity: 'common',attack: 10,defense: 10,hp: 20,image: "image/Fée/cheunille.png"},
+    { id: 'magido',name: 'Magido',type: 'fée',rarity: 'common',attack: 18,defense: 7,hp: 19,image: "image/Fée/magido.png"},
+    // Glace
+    { id: 'bluemiau', name: 'Bluemiau', type: 'glace', rarity:'common', attack: 10, defense: 10, hp: 20, image: "image/Glace/bluemiau.png" },
+    { id: 'scaraglac', name: 'Scaraglac', type: 'glace', rarity:'common', attack: 12, defense: 10, hp: 19, image: "image/Glace/scaraglac.png" },
+    { id: 'givrotin', name: 'Givrotin', type: 'glace', rarity:'common', attack: 15, defense: 11, hp: 19, image: "image/Glace/givrotin.png" },
   ],
 
   // ----------------------------------------------------------Rare-----------------------------------------------------------------------
@@ -91,24 +121,37 @@ const SPECIES = {
     { id: 'ondin', name: 'Ondin', type: 'eau', rarity:'rare', attack: 16, defense: 12, hp: 22, image: "image/Eau/ondin.png" },
     { id: 'sirena', name: 'Siréna', type: 'eau', rarity:'rare', attack: 17, defense: 11, hp: 22, image: "image/Eau/sirena.png" },
     { id: 'marinelle', name: 'Marinelle', type: 'eau', rarity:'rare', attack: 18, defense: 10, hp: 22, image: "image/Eau/marinelle.png" },
+    { id: 'renardeau', name: 'Renardeau', type: 'eau', rarity:'rare', attack: 18, defense: 12, hp: 23, image: "image/Eau/renardeau.png" },
 
     { id: 'salamandre', name: 'Salamandre', type: 'feu', rarity:'rare', attack: 17, defense: 12, hp: 22, image: "image/Feu/salamandre.png" },
     { id: 'feuret', name: 'Feuret', type: 'feu', rarity:'rare', attack: 18, defense: 10, hp: 22, image: "image/Feu/feuret.png" },
     { id: 'magmeling', name: 'Magmeling', type: 'feu', rarity:'rare', attack: 19, defense: 10, hp: 22, image: "image/Feu/magmeling.png" },
+    { id: 'charbonet', name: 'Charbonet', type: 'feu', rarity:'rare', attack: 15, defense: 18, hp: 22, image: "image/Feu/charbonet.png" },
 
     { id: 'dryade', name: 'Dryade', type: 'plante', rarity:'rare', attack: 15, defense: 13, hp: 22, image: "image/Plante/dryade.png" },
     { id: 'squirel', name: 'Squirel', type: 'plante', rarity:'rare', attack: 14, defense: 14, hp: 22, image: "image/Plante/squirel.png" },
+    { id: 'voltigeau', name: 'Voltigeau', type: 'plante', rarity:'rare', attack: 20, defense: 10, hp: 22, image: "image/Plante/voltigeau.png" },
     { id: 'roncebarbe', name: 'Roncebarbe', type: 'plante', rarity:'rare', attack: 16, defense: 12, hp: 22, image: "image/Plante/roncebarbe.png" },
 
     { id: 'golem', name: 'Golem', type: 'terre', rarity:'rare', attack: 15, defense: 14, hp: 22, image: "image/Terre/golem.png" },
     { id: 'bouldard', name: 'Bouldard', type: 'terre', rarity:'rare', attack: 17, defense: 13, hp: 22, image: "image/Terre/bouldard.png" },
-    { id: 'terramite', name: 'Terramite', type: 'terre', rarity:'rare', attack: 14, defense: 15, hp: 22, image: "image/Terre/terramite.png" }
+    { id: 'géocorn', name: 'Géocorn', type: 'terre', rarity:'rare', attack: 20, defense: 15, hp: 22, image: "image/Terre/géocorn.png" },
+    { id: 'terramite', name: 'Terramite', type: 'terre', rarity:'rare', attack: 14, defense: 15, hp: 22, image: "image/Terre/terramite.png" },
+
+    { id: 'voltara', name: 'Voltara', type: 'electrique', rarity:'rare', attack: 18, defense: 15, hp: 22, image: "image/Electrique/voltara.png" },
+
+    { id: 'glacison', name: 'Glacison', type: 'glace', rarity:'rare', attack: 14, defense: 18, hp: 24, image: "image/Glace/glacison.png" },
+
+    { id: 'astrolodie', name: 'Astrolodie', type: 'fée', rarity:'rare', attack: 15, defense: 20, hp: 22, image: "image/Fée/astrolodie.png" },
+    { id: 'iriselle', name: 'Iriselle', type: 'fée', rarity:'rare', attack: 16, defense: 18, hp: 22, image: "image/Fée/iriselle.png" },
+    { id: 'gemmefé', name: 'Gemmefé', type: 'fée', rarity:'rare', attack: 18, defense: 14, hp: 22, image: "image/Fée/gemmefé.png" },
   ],
   
   // -------------------------------------------------------------Épique (2-3 par type)------------------------------------------------------
   epic: [
     { id: 'kraken', name: 'Kraken', type: 'eau', rarity:'epic', attack: 20, defense: 18, hp: 25, image: "image/Eau/kraken.png" },
     { id: 'leviathan', name: 'Léviathan', type: 'eau', rarity:'epic', attack: 18, defense: 20, hp: 25, image: "image/Eau/leviathan.png" },
+    { id: 'aqualon', name: 'Aqualon', type: 'eau', rarity:'epic', attack: 23, defense: 20, hp: 25, image: "image/Eau/aqualon.png" },
 
     { id: 'dragondelave', name: 'Dragon de Lave', type: 'feu', rarity:'epic', attack: 21, defense: 16, hp:25, image: "image/Feu/dragondelave.png" },
     { id: 'phenix', name: 'Phénix', type: 'feu', rarity:'epic', attack: 22, defense: 15, hp: 25, image: "image/Feu/phenix.png" },
@@ -117,7 +160,11 @@ const SPECIES = {
     { id: 'entancien', name: 'Ent Ancien', type: 'plante', rarity:'epic', attack: 18, defense: 23, hp: 25, image: "image/Plante/entancien.png" },
 
     { id: 'titandepierre', name: 'Titan de Pierre', type: 'terre', rarity:'epic', attack: 23, defense: 19, hp: 25, image: "image/Terre/titandepierre.png" },
-    { id: 'colosse', name: 'Colosse', type: 'terre', rarity:'epic', attack: 20, defense: 20, hp: 25, image: "image/Terre/colosse.png" }
+    { id: 'colosse', name: 'Colosse', type: 'terre', rarity:'epic', attack: 20, defense: 20, hp: 25, image: "image/Terre/colosse.png" },
+
+    { id: 'voltige', name: 'Volige', type: 'electrique', rarity:'epic', attack: 23, defense: 21, hp: 26, image: "image/Electrique/voltige.png" },
+
+    
   ]
 };
 
@@ -132,28 +179,45 @@ const BOSS_SPECIES = [
 // ----------------------------------------------Database Evolution et principe d'évolution--------------------------------------------------------------------
 const EVOLVED_SPECIES = {
     'hydrolette': { id: 'hydrolette', name: 'Hydrolette', type: 'eau', rarity: 'common', attack: 15, defense: 10, speed: 8, hp: 25, image: "image/Eau/hydrolette.png" },
+    'escarvague': { id: 'escarvague', name: 'Escarvague', type: 'eau', rarity: 'common', attack: 17, defense: 14, speed: 8, hp: 26, image: "image/Eau/escarvague.png" },
     'pyronis': { id: 'pyronis', name: 'Pyronis', type: 'feu', rarity: 'common', attack: 20, defense: 8, speed: 8, hp: 25, image: "image/Feu/pyronis.png" },
     'mycolos': { id: 'mycolos', name: 'Mycolos', type: 'plante', rarity: 'common', attack: 14, defense: 17, speed: 8, hp: 25, image: "image/Plante/mycolos.png" },
     'terrelet': { id: 'terrelet', name: 'Terrelet', type: 'terre', rarity: 'common', attack: 15, defense: 15, speed: 8, hp: 25, image: "image/Terre/terrelet.png" },
     'volcalave': { id: 'volcalave', name: 'Volcalave', type: 'feu', rarity: 'epic', attack: 27, defense: 21, speed: 8, hp: 33, image: "image/Feu/volcalave.png" },
     'fulminoir': { id: 'fulminoir', name: 'Fulminoir', type: 'feu', rarity: 'rare', attack: 23, defense: 15, speed: 8, hp: 27, image: "image/Feu/fulminoir.png" },
+    'cendron': { id: 'cendron', name: 'Cendron', type: 'feu', rarity: 'rare', attack: 15, defense: 20, speed: 8, hp: 27, image: "image/Feu/cendron.png" },
     'sirenalia': { id: 'sirenalia', name: 'Sirenalia', type: 'eau', rarity: 'rare', attack: 22, defense: 15, speed: 8, hp: 27, image: "image/Eau/sirenalia.png" },
     'vaguesenior': { id: 'vaguesenior', name: 'Vague Sénior', type: 'eau', rarity: 'common', attack: 17, defense: 12, speed: 8, hp: 25, image: "image/Eau/vaguesenior.png" },
     'vegetoss': { id: 'vegetoss', name: 'Vegetoss', type: 'plante', rarity: 'common', attack: 16, defense: 14, speed: 8, hp: 25, image: "image/Plante/vegetoss.png" },
     'squirfeuil': { id: 'squirfeuil', name: 'Squirfeuil', type: 'plante', rarity: 'rare', attack: 19, defense: 19, speed: 8, hp: 27, image: "image/Plante/squirfeuil.png" },
+    'florillon': { id: 'florillon', name: 'Florillon', type: 'fée', rarity: 'rare', attack: 19, defense: 15, speed: 8, hp: 27, image: "image/Fée/florillon.png" },
+    'racinebraise': { id: 'racinebraise', name: 'Racinebraise', type: 'plante', rarity: 'common', attack: 15, defense: 15, speed: 8, hp: 27, image: "image/Plante/racinebraise.png" },
+    'cryopard': { id: 'cryopard', name: 'Cryopard', type: 'glace', rarity:'epic', attack: 22, defense: 20, speed: 10, hp: 29, image: "image/Glace/cryopard.png" },
+    'coleoglac': { id: 'coleoglac', name: 'Coléoglac', type: 'glace', rarity:'rare', attack: 18, defense: 15, speed: 8, hp: 25, image: "image/Glace/coleoglac.png" },
+    'zappere': { id: 'zappere', name: 'Zappère', type: 'electrique', rarity:'common', attack: 18, defense: 15, speed: 8, hp: 25, image: "image/Electrique/zappere.png" },
+    'eponia': { id: 'eponia', name: 'Eponia', type: 'fée', rarity:'rare', attack: 17, defense: 20, hp: 22, image: "image/Fée/eponia.png" },
 };
 
 const EVOLUTIONS = {
     'gouttelette': {evolvesTo: 'hydrolette', condition: {level: 20, victories: 3000}},
+    'escarglace': {evolvesTo: 'escarvague', condition: {level: 23}},
     'pyron': {evolvesTo: 'pyronis', condition: {level: 20, victories: 3000}},
     'champi': {evolvesTo: 'mycolos', condition: {level: 20, victories: 3000}},
     'mineralien': {evolvesTo: 'terrelet', condition: {level: 25, victories: 4000}},
     'dragondelave': {evolvesTo: 'volcalave', condition: {level: 70, victories: 33000}},
-    'feuret': {evolvesTo: 'fulminoir', condition: {level: 35, victories: 13000}},
+    'feuret': {evolvesTo: 'fulminoir', condition: {level: 35, victories: 10000}},
     'sirena': {evolvesTo: 'sirenalia', condition: {level: 35, victories: 13000}},
+    'cheunille': {evolvesTo: 'florillon', condition: {level: 28, victories: 6000}},
     'vaguejunior': {evolvesTo: 'vaguesenior', condition: {level: 20, victories: 3000}},
     'mousseur': {evolvesTo: 'vegetoss', condition: {level: 20, victories: 3000}},
     'squirel': {evolvesTo: 'squirfeuil', condition: {level: 35, victories: 13000}},
+    'terreau': {evolvesTo: 'racinebraise', condition: {level: 39, victories: 13000}},
+    'dormor': {evolvesTo: 'cendron', condition: {level: 43}},
+    'bluemiau': {evolvesTo: 'cryopard', condition: {level: 50}},
+    'scaraglac': {evolvesTo: 'coleoglac', condition: {level: 33}},
+    'voltibat': {evolvesTo: 'zappere', condition: {victories: 5000}},
+    'roseponge': {evolvesTo: 'eponia', condition: {victories: 15000}},
+
 };
 
 // -----------------------------------------------------------ITEMS DANS LA BOUTIQUE-------------------------------------------------------------

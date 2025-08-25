@@ -1354,3 +1354,20 @@
         transform: translateY(0);
     }
 }
+
+
+/* Mise en page des nouveaux types */
+.badge.electrique {
+    background: linear-gradient(135deg, #FFD700, #FFEC8B);
+    color: #B8860B;
+}
+
+.badge.glace {
+    background: linear-gradient(135deg, #ADD8E6, #F0F8FF);
+    color: #4682B4;
+}
+
+.badge.fée {
+    background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
+    color: #C71585;
+}

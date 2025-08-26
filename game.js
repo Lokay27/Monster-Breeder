@@ -567,12 +567,26 @@ function renderMain(){
         </div>
     `).join('');
 
-    // Ajout du compteur de victoires
+    // CORRECTION : Utiliser speciesId pour vérifier l'évolution
     let victoriesHtml = `<div class="statline">Victoires : ${m.victories}</div>`;
-    const evolutionInfo = EVOLUTIONS[m.species];
+    const evolutionInfo = EVOLUTIONS[m.speciesId]; // CHANGÉ DE m.species à m.speciesId
     if (evolutionInfo) {
-        const victoriesNeeded = evolutionInfo.condition.victories;
-        victoriesHtml = `<div class="statline">Victoires : ${m.victories}/${victoriesNeeded}</div>`;
+        const victoriesNeeded = evolutionInfo.condition.victories || 0;
+        const levelNeeded = evolutionInfo.condition.level || 0;
+        
+        // Affichage des conditions d'évolution
+        let conditionsText = [];
+        if (levelNeeded > 0) conditionsText.push(`Niv.${levelNeeded}`);
+        if (victoriesNeeded > 0) conditionsText.push(`${victoriesNeeded} victoires`);
+        
+        victoriesHtml = `<div class="statline">Victoires : ${m.victories}${victoriesNeeded > 0 ? `/${victoriesNeeded}` : ''}</div>`;
+        
+        if (levelNeeded > 0 && m.level < levelNeeded) {
+            victoriesHtml += `<div class="statline evolution-conditions">Évolution : ${conditionsText.join(' + ')}</div>`;
+        } else if (victoriesNeeded > 0 && m.victories < victoriesNeeded) {
+            victoriesHtml += `<div class="statline evolution-conditions">Évolution : ${conditionsText.join(' + ')}</div>`;
+        }
+        
         if (m.evolutionPending) {
             victoriesHtml += `<div class="statline evolution-ready">Prêt à évoluer en ${EVOLVED_SPECIES[evolutionInfo.evolvesTo].name} !</div>`;
         }
@@ -1594,7 +1608,8 @@ function getSpeciesDataById(speciesId) {
 
 // Vérifie si le monstre peut évoluer
 function checkEvolution(monster) {
-    const evolutionInfo = EVOLUTIONS[monster.species];
+    // CORRECTION : Utiliser speciesId au lieu de species
+    const evolutionInfo = EVOLUTIONS[monster.speciesId];
     if (!evolutionInfo) {
         return;
     }
@@ -1612,6 +1627,9 @@ function checkEvolution(monster) {
     if (allConditionsMet) {
         monster.evolutionPending = true;
         monster.evolvesTo = evolutionInfo.evolvesTo;
+        
+        // AJOUT : Log pour debug (optionnel)
+        console.log(`${monster.name} peut maintenant évoluer en ${EVOLVED_SPECIES[evolutionInfo.evolvesTo].name}!`);
     }
 }
 
@@ -1633,7 +1651,8 @@ function evolveMonster(monster, newSpeciesId) {
     evolutionImage.classList.add('evolve-animation');
 
     setTimeout(() => {
-        monster.species = newSpeciesId;
+        // CORRECTION : Mettre à jour speciesId au lieu de species
+        monster.speciesId = newSpeciesId;
         monster.name = newSpeciesData.name;
         monster.image = newSpeciesData.image;
         monster.rarity = newSpeciesData.rarity;
@@ -1649,7 +1668,6 @@ function evolveMonster(monster, newSpeciesId) {
         // Récupération complète des HP avec les nouvelles stats
         const finalStats = getFinalStats(monster);
         monster.hp = finalStats.hp;
-
 
         evolutionImage.src = monster.image;
         evolutionImage.classList.remove('evolve-animation');
